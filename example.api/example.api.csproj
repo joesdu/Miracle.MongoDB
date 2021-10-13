@@ -8,15 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Miracle.MongoDB.Gen" Version="1.0.3" />
-    <PackageReference Include="Miracle.WebApi.Filters" Version="1.0.0" />
-    <PackageReference Include="Miracle.WebApi.JsonConverters" Version="1.0.1" />
+    <PackageReference Include="Miracle.MongoDB.Gen" Version="1.0.4" />
+    <PackageReference Include="Miracle.MongoDB.GridFS" Version="1.0.2" />
+    <PackageReference Include="Miracle.WebApi.Filters" Version="1.0.1" />
+    <PackageReference Include="Miracle.WebApi.JsonConverters" Version="1.0.2" />
     <PackageReference Include="Miracle.WebApi.Middlewares" Version="1.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Miracle.MongoDB.GridFS\Miracle.MongoDB.GridFS.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Miracle.MongoDB;
 
 namespace example.api.Controllers
 {
@@ -8,7 +9,7 @@ namespace example.api.Controllers
     {
         private readonly DbContext db;
 
-        public WeatherForecastController(DbContext context) => db = context;
+        public WeatherForecastController(IDbSet context) => db = (DbContext)context;
 
         private static readonly string[] Summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
 

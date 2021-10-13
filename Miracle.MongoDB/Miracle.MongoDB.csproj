@@ -11,7 +11,7 @@
 4.you can simply using Miracle.MongoDB.Gen's AddMongoDbContext method in ConfigureServices(startup.cs) to create your DbContext</Description>
 	<PackageProjectUrl>https://github.com/joesdu/Miracle.MongoDB</PackageProjectUrl>
 	<PackageIcon>icon.png</PackageIcon>
-	<Version>1.0.1</Version>
+	<Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>

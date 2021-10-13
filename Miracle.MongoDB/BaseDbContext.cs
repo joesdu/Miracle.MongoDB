@@ -9,7 +9,7 @@ namespace Miracle.MongoDB
     /// <summary>
     /// mongodb base context
     /// </summary>
-    public class BaseDbContext
+    public class BaseDbContext : IDbSet
     {
         public IMongoClient _client;
         public IMongoDatabase _database;
@@ -37,6 +37,7 @@ namespace Miracle.MongoDB
             t._database = t._client.GetDatabase(dbSettings.Db);
             return t;
         }
+
         public static T CreateInstance<T>(string connectionString, string db = "") where T : BaseDbContext
         {
             T t = Activator.CreateInstance<T>();
@@ -77,7 +78,9 @@ namespace Miracle.MongoDB
             };
             ConventionRegistry.Register("idpack" + Guid.NewGuid().ToString(), idpack, x => options.IsConvertObjectIdToStringType(x) == false);
         }
+
         protected virtual string[] GetTransactColletions() => Array.Empty<string>();
+
         public void BuildTransactCollections()
         {
             if (_database is null) throw new("_database not prepared,please use this method after DbContext instantiation");
@@ -93,6 +96,7 @@ namespace Miracle.MongoDB
                 }
             }
         }
+
         private bool CreateCollections(string[] collections)
         {
             try
