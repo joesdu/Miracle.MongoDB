@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<LangVersion>latest</LangVersion>
+	<Title>Sample mongodb connection helper</Title>
+	<Description>1.BaseDbContext.cs:you can create your DbContext inherit BaseDbContext package some useful mongodb-to-C# mapping,like ObjectId&lt;=&gt;string,UTC&lt;=&gt;LocalTime,Enum&lt;=&gt;string,property name to camel field..etc
+2.can get ConnetionString from env "CONNECTIONSTRINGS_MONGO" in docker container or "ConnectionStrings.Mongo" in appsettings.json:
+3.BsonDocumentExtends.cs:extend method to BsonValue,for example: var bs={info:{gender:{k:'01',v:'Man'}}} . we can get "Man" through bs.GetValueByHierarchicalNames("info.gender.v")
+4.you can simply using Miracle.MongoDB.Gen's AddMongoDbContext method in ConfigureServices(startup.cs) to create your DbContext</Description>
+	<PackageProjectUrl>https://github.com/joesdu/Miracle.MongoDB</PackageProjectUrl>
+	<PackageIcon>icon.png</PackageIcon>
+	<Version>1.0.1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Bson" Version="2.13.2" />
+    <PackageReference Include="MongoDB.Driver" Version="2.13.2" />
+  </ItemGroup>
+
+</Project>

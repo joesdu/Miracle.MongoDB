@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<LangVersion>latest</LangVersion>
+	<Description>Miracle.MongoDB DbContext setting,use [CONNECTIONSTRINGS_MONGO] in environment variable or [ConnectionStrings.Mongo] in appsettings.json to create DbContext,prefer using [CONNECTIONSTRINGS_MONGO] in env</Description>
+	<PackageIcon>icon.png</PackageIcon>
+	<RepositoryUrl>https://github.com/joesdu/Miracle.MongoDB</RepositoryUrl>
+	<Version>1.0.3</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0-rc.1.21451.13" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0-rc.1.21451.13" />
+    <PackageReference Include="Miracle.MongoDB" Version="1.0.1" />
+  </ItemGroup>
+
+</Project>
