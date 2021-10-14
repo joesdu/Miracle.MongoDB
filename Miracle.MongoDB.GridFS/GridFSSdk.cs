@@ -64,7 +64,7 @@ namespace Miracle.MongoDB.GridFS
         public async Task<(GridFSFileInfo, byte[])> FileContent(string id)
         {
             var fi = await bucket.Find("{_id:ObjectId('" + id + "')}").SingleOrDefaultAsync() ?? throw new("no data find");
-            var bytes = await bucket.DownloadAsBytesAsync(ObjectId.Parse(id));
+            var bytes = await bucket.DownloadAsBytesAsync(ObjectId.Parse(id), new GridFSDownloadOptions() { Seekable = true });
             return (fi, bytes);
         }
 
