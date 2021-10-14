@@ -69,6 +69,14 @@ namespace Miracle.MongoDB.GridFS
         }
 
         /// <summary>
+        /// 重命名文件
+        /// </summary>
+        /// <param name="id">文件ID</param>
+        /// <param name="newname">新名称</param>
+        /// <returns></returns>
+        public async Task Rename(string id, string newname) => await bucket.RenameAsync(ObjectId.Parse(id), newname);
+
+        /// <summary>
         /// 删除文件
         /// </summary>
         /// <param name="id">文件ID</param>

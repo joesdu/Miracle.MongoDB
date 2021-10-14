@@ -22,11 +22,14 @@ namespace example.api.Controllers
         }
 
         [HttpGet("FileContent/{id}")]
-        public async Task<FileContentResult> GetFileContent(string id)
+        public async Task<FileContentResult> FileContent(string id)
         {
             var (fi, bytes) = await gridSdk.FileContent(id);
             return File(bytes, fi.Metadata["contentType"].AsString, fi.Filename);
         }
+
+        [HttpPut("{id}/Rename/{newname}")]
+        public async Task Rename(string id, string newname) => await gridSdk.Rename(id, newname);
 
         [HttpDelete("{id}")]
         public async Task Delete(string id) => await gridSdk.Delete(id);
