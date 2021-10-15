@@ -1,19 +1,23 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
 
 namespace Miracle.MongoDB.GridFS
 {
-    public class GridFSSdk
+    [ApiController]
+    [Route("[controller]")]
+    public class GridFSController : ControllerBase
     {
         private readonly GridFSBucket bucket;
-        public GridFSSdk(GridFSBucket bucket) => this.bucket = bucket;
+        public GridFSController(GridFSBucket bucket) => this.bucket = bucket;
 
         /// <summary>
         /// 添加一个或多个文件
         /// </summary>
         /// <param name="dto">UploadGridFS</param>
         /// <returns></returns>
+        [HttpPost("Upload")]
         public async Task<IEnumerable<GridFSItem>> Post(UploadGridFS fs)
         {
             if (string.IsNullOrWhiteSpace(fs.BusinessType)) throw new("BusinessType can not be null");
@@ -54,18 +58,24 @@ namespace Miracle.MongoDB.GridFS
         /// </summary>
         /// <param name="id">文件ID</param>
         /// <returns></returns>
-        public async Task<GridFSDownloadStream> Download(string id) => await bucket.OpenDownloadStreamAsync(ObjectId.Parse(id), new() { Seekable = true });
+        [HttpGet("Download/{id}")]
+        public async Task<FileStreamResult> Download(string id)
+        {
+            var stream = await bucket.OpenDownloadStreamAsync(ObjectId.Parse(id), new() { Seekable = true });
+            return File(stream, stream.FileInfo.Metadata["contentType"].AsString, stream.FileInfo.Filename);
+        }
 
         /// <summary>
         /// 打开文件内容
         /// </summary>
         /// <param name="id">文件ID</param>
         /// <returns></returns>
-        public async Task<(GridFSFileInfo, byte[])> FileContent(string id)
+        [HttpGet("FileContent/{id}")]
+        public async Task<FileContentResult> FileContent(string id)
         {
             var fi = await bucket.Find("{_id:ObjectId('" + id + "')}").SingleOrDefaultAsync() ?? throw new("no data find");
             var bytes = await bucket.DownloadAsBytesAsync(ObjectId.Parse(id), new GridFSDownloadOptions() { Seekable = true });
-            return (fi, bytes);
+            return File(bytes, fi.Metadata["contentType"].AsString, fi.Filename);
         }
 
         /// <summary>
@@ -74,6 +84,7 @@ namespace Miracle.MongoDB.GridFS
         /// <param name="id">文件ID</param>
         /// <param name="newname">新名称</param>
         /// <returns></returns>
+        [HttpPut("{id}/Rename/{newname}")]
         public async Task Rename(string id, string newname) => await bucket.RenameAsync(ObjectId.Parse(id), newname);
 
         /// <summary>
@@ -81,6 +92,7 @@ namespace Miracle.MongoDB.GridFS
         /// </summary>
         /// <param name="id">文件ID</param>
         /// <returns></returns>
+        [HttpDelete("{id}")]
         public async Task Delete(string id) => await bucket.DeleteAsync(ObjectId.Parse(id));
     }
 }

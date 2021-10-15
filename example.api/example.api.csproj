@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Miracle.MongoDB.Gen" Version="1.0.4" />
     <PackageReference Include="Miracle.WebApi.Filters" Version="1.0.1" />
     <PackageReference Include="Miracle.WebApi.JsonConverters" Version="1.0.2" />
     <PackageReference Include="Miracle.WebApi.Middlewares" Version="1.0.0" />
@@ -16,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Miracle.MongoDB.Gen\Miracle.MongoDB.Gen.csproj" />
     <ProjectReference Include="..\Miracle.MongoDB.GridFS\Miracle.MongoDB.GridFS.csproj" />
   </ItemGroup>
 
