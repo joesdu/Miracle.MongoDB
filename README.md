@@ -32,6 +32,8 @@ value.BsonType switch
     {
         "Mongo": "mongodb链接字符串"
     }
+    // 或者使用
+    "CONNECTIONSTRINGS_MONGO": "mongodb链接字符串"
 }
 ```
 
@@ -97,10 +99,7 @@ builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "example.
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
+if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 
 app.UseGlobalException();
 app.UseResponseTime();
