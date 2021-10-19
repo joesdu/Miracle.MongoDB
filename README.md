@@ -31,7 +31,7 @@ value.BsonType switch
     "ConnectionStrings": 
     {
         "Mongo": "mongodb链接字符串"
-    }
+    },
     // 或者使用
     "CONNECTIONSTRINGS_MONGO": "mongodb链接字符串"
 }
