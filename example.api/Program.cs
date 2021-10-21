@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var db = builder.Services.AddMongoDbContext<DbContext>(builder.Configuration);
 
-builder.Services.AddMiracleGridFS(db._database, new() {  });
+builder.Services.AddMiracleGridFS(db._database);
 
 builder.Services.AddControllers();
 

@@ -16,7 +16,7 @@ namespace Miracle.MongoDB.GridFS
             {
                 c.MultipartBodyLengthLimit = long.MaxValue;
                 c.ValueLengthLimit = int.MaxValue;
-            }).Configure<KestrelServerOptions>(c => c.Limits.MaxRequestBodySize = int.MaxValue).AddSingleton(new GridFSBucket(defalutdb ? db.Client.GetDatabase("mircalefs") : db, options));
+            }).Configure<KestrelServerOptions>(c => c.Limits.MaxRequestBodySize = int.MaxValue).AddSingleton(new GridFSBucket(defalutdb ? db.Client.GetDatabase("mircale") : db, options));
             return services;
         }
         public static string BusinessApp { get; set; }

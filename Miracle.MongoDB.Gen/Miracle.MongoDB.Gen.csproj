@@ -5,10 +5,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<LangVersion>latest</LangVersion>
-	<Description>Miracle.MongoDB DbContext setting,use [CONNECTIONSTRINGS_MONGO] in environment variable or [ConnectionStrings.Mongo] in appsettings.json to create DbContext,prefer using [CONNECTIONSTRINGS_MONGO] in env</Description>
 	<PackageIcon>icon.png</PackageIcon>
 	<RepositoryUrl>https://github.com/joesdu/Miracle.MongoDB</RepositoryUrl>
-	<Version>1.0.4</Version>
+	<Version>1.0.5</Version>
   </PropertyGroup>
 
   <ItemGroup>
