@@ -17,13 +17,13 @@ namespace Miracle.MongoDB.GridFS
         /// </summary>
         /// <param name="dto">UploadGridFS</param>
         /// <returns></returns>
-        [HttpPost("Upload")]
-        public async Task<IEnumerable<GridFSItem>> Post(UploadGridFS fs)
+        [HttpPost("UploadMulti")]
+        public async Task<IEnumerable<GridFSItem>> PostMulti(UploadGridFSMulti fs)
         {
             if (string.IsNullOrWhiteSpace(fs.BusinessType)) throw new("BusinessType can not be null");
             if (fs.File is null || fs.File.Count == 0) throw new("no files find");
-            var rsList = new List<GridFSItem> { };
             if (fs.DeleteIds.Count > 0) foreach (var did in fs.DeleteIds) await bucket.DeleteAsync(ObjectId.Parse(did));
+            var rsList = new List<GridFSItem> { };
             foreach (var item in fs.File)
             {
                 if (item.ContentType is null) throw new("ContentType in File is null");
@@ -51,6 +51,42 @@ namespace Miracle.MongoDB.GridFS
                 });
             }
             return rsList;
+        }
+
+        /// <summary>
+        /// 添加一个或多个文件
+        /// </summary>
+        /// <param name="dto">UploadGridFS</param>
+        /// <returns></returns>
+        [HttpPost("UploadSingle")]
+        public async Task<GridFSItem> PostSingle(UploadGridFSSingle fs)
+        {
+            if (string.IsNullOrWhiteSpace(fs.BusinessType)) throw new("BusinessType can not be null");
+            if (fs.File is null) throw new("no files find");
+            if (!string.IsNullOrEmpty(fs.DeleteId)) await bucket.DeleteAsync(ObjectId.Parse(fs.DeleteId));
+            if (fs.File.ContentType is null) throw new("ContentType in File is null");
+            var upo = new GridFSUploadOptions
+            {
+                BatchSize = 1,
+                Metadata = new()
+                {
+                    { "contentType", fs.File.ContentType }
+                }
+            };
+            var bapp = fs.App ?? GridFSExtensions.BusinessApp;
+            if (string.IsNullOrWhiteSpace(bapp)) throw new("BusinessApp can't be null");
+            _ = upo.Metadata.AddRange(new BsonDocument { { "app", bapp } });
+            if (!string.IsNullOrWhiteSpace(fs.BusinessType)) _ = upo.Metadata.AddRange(new BsonDocument { { "business", fs.BusinessType } });
+            if (!string.IsNullOrWhiteSpace(fs.CategoryId)) _ = upo.Metadata.AddRange(new BsonDocument { { "category", fs.CategoryId } });
+            _ = upo.Metadata.AddRange(new BsonDocument { { "creator", new { fs.UserId, fs.UserName }.ToBsonDocument() } });
+            var oid = await bucket.UploadFromStreamAsync(fs.File.FileName, fs.File.OpenReadStream(), upo);
+            return new()
+            {
+                FileId = oid.ToString(),
+                FileName = fs.File.FileName,
+                Length = fs.File.Length,
+                ContentType = fs.File.ContentType
+            };
         }
 
         /// <summary>

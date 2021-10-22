@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Miracle.MongoDB.GridFS
 {
-    public class UploadGridFS
+    public class UploadGridFSInfo
     {
         /// <summary>
         /// 用户ID
@@ -18,10 +18,6 @@ namespace Miracle.MongoDB.GridFS
         /// </summary>
         public string App { get; set; }
         /// <summary>
-        /// 资源ID
-        /// </summary>
-        public List<string> DeleteIds { get; set; } = new();
-        /// <summary>
         /// Business类型
         /// </summary>
         [Required]
@@ -30,10 +26,31 @@ namespace Miracle.MongoDB.GridFS
         /// 可用于资源中心,记录所属目录id
         /// </summary>
         public string CategoryId { get; set; }
+    }
+
+    public class UploadGridFSMulti : UploadGridFSInfo
+    {
+        /// <summary>
+        /// 资源ID
+        /// </summary>
+        public List<string> DeleteIds { get; set; }
         /// <summary>
         /// 上传文件(单或多文件)
         /// </summary>
         [Required]
-        public List<IFormFile> File { get; set; } = new();
+        public List<IFormFile> File { get; set; }
+    }
+
+    public class UploadGridFSSingle : UploadGridFSInfo
+    {
+        /// <summary>
+        /// 资源ID
+        /// </summary>
+        public string DeleteId { get; set; }
+        /// <summary>
+        /// 上传文件(单或多文件)
+        /// </summary>
+        [Required]
+        public IFormFile File { get; set; }
     }
 }

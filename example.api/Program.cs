@@ -13,11 +13,7 @@ var db = builder.Services.AddMongoDbContext<DbContext>(builder.Configuration);
 
 builder.Services.AddMiracleGridFS(db._database);
 
-builder.Services.AddControllers(c =>
-{
-    c.Filters.Add<ExceptionFilter>();
-    c.Filters.Add<ActionExecuteFilter>();
-});
+builder.Services.AddControllers(c => c.Filters.Add<ActionExecuteFilter>());
 
 builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "example.api", Version = "v1" }));
 
@@ -26,7 +22,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 
-//app.UseGlobalException();
+app.UseGlobalException();
 app.UseResponseTime();
 app.UseCors("AllowedHosts");
 
