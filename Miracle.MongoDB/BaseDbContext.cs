@@ -69,7 +69,7 @@ namespace Miracle.MongoDB
                 }
                 catch (Exception ex)
                 {
-                    throw new("you have already regist commonpack,please change param [first] to false from since second RegistConventionPack Method(or BL.MongoDB.Gen.AddBLDbContext etc..):" + ex.Message);
+                    throw new("you have already regist commonpack,please change param [first] to false from since second RegistConventionPack Method(or Miracle.MongoDB.Gen.AddMongoDbContext etc..):" + ex.Message);
                 }
             }
             var idpack = new ConventionPack
