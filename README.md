@@ -91,7 +91,7 @@ var builder = WebApplication.CreateBuilder(args);
 var db = builder.Services.AddMongoDbContext<DbContext>(builder.Configuration);
 // builder.Services.AddMongoDbContext<DbContext>(Configuration, c => c.AddConvertObjectIdToStringTypes(typeof(Test)));
 // Miracle.MongoDB.GridFS 服务添加
-builder.Services.AddMiracleGridFS(db._database, new() { });
+builder.Services.AddMiracleGridFS(db._database);
 builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "example.api", Version = "v1" }));
