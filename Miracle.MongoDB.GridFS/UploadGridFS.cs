@@ -38,7 +38,7 @@ namespace Miracle.MongoDB.GridFS
         /// 上传文件(单或多文件)
         /// </summary>
         [Required]
-        public List<IFormFile> File { get; set; }
+        public IFormFileCollection File { get; set; }
     }
 
     public class UploadGridFSSingle : UploadGridFSInfo
