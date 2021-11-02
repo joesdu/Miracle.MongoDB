@@ -28,6 +28,6 @@ app.UseCors("AllowedHosts");
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseSwagger().UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "example.api v1"));
+app.UseSwagger().UseSwaggerUI();
 
 app.Run();
