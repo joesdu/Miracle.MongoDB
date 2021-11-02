@@ -14,7 +14,7 @@ namespace Miracle.MongoDB.GridFS
         /// </summary>
         public string UserName { get; set; }
         /// <summary>
-        /// BusinessApp与该值至少要有一个.当该值存在时,优化取此值.
+        /// BusinessApp与该值至少要有一个.当该值存在时,优先取此值.
         /// </summary>
         public string App { get; set; }
         /// <summary>
@@ -33,7 +33,7 @@ namespace Miracle.MongoDB.GridFS
         /// <summary>
         /// 资源ID
         /// </summary>
-        public List<string> DeleteIds { get; set; }
+        public List<string> DeleteIds { get; set; } = new();
         /// <summary>
         /// 上传文件(单或多文件)
         /// </summary>

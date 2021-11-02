@@ -27,17 +27,17 @@ namespace Miracle.MongoDB.GridFS
             foreach (var item in fs.File)
             {
                 if (item.ContentType is null) throw new("ContentType in File is null");
+                var bapp = !string.IsNullOrWhiteSpace(fs.App) ? fs.App : GridFSExtensions.BusinessApp;
+                if (string.IsNullOrWhiteSpace(bapp)) throw new("BusinessApp can't be null");
+                var metadata = new Dictionary<string, object> { { "app", bapp }, { "creator", new { fs.UserId, fs.UserName }.ToBsonDocument() } };
+                if (!string.IsNullOrWhiteSpace(fs.BusinessType)) metadata.Add("business", fs.BusinessType);
+                if (!string.IsNullOrWhiteSpace(fs.CategoryId)) metadata.Add("category", fs.CategoryId);
                 var upo = new GridFSUploadOptions
                 {
                     BatchSize = fs.File.Count,
                     Metadata = new() { { "contentType", item.ContentType } }
                 };
-                var bapp = fs.App ?? GridFSExtensions.BusinessApp;
-                if (string.IsNullOrWhiteSpace(bapp)) throw new("BusinessApp can't be null");
-                _ = upo.Metadata.AddRange(new BsonDocument { { "app", bapp } });
-                if (!string.IsNullOrWhiteSpace(fs.BusinessType)) _ = upo.Metadata.AddRange(new BsonDocument { { "business", fs.BusinessType } });
-                if (!string.IsNullOrWhiteSpace(fs.CategoryId)) _ = upo.Metadata.AddRange(new BsonDocument { { "category", fs.CategoryId } });
-                _ = upo.Metadata.AddRange(new BsonDocument { { "creator", new { fs.UserId, fs.UserName }.ToBsonDocument() } });
+                upo.Metadata.AddRange(metadata);
                 var oid = await bucket.UploadFromStreamAsync(item.FileName, item.OpenReadStream(), upo);
                 rsList.Add(new()
                 {
@@ -62,7 +62,7 @@ namespace Miracle.MongoDB.GridFS
             if (fs.File is null) throw new("no files find");
             if (!string.IsNullOrEmpty(fs.DeleteId)) await bucket.DeleteAsync(ObjectId.Parse(fs.DeleteId));
             if (fs.File.ContentType is null) throw new("ContentType in File is null");
-            var bapp = fs.App ?? GridFSExtensions.BusinessApp;
+            var bapp = !string.IsNullOrWhiteSpace(fs.App) ? fs.App : GridFSExtensions.BusinessApp;
             if (string.IsNullOrWhiteSpace(bapp)) throw new("BusinessApp can't be null");
             var metadata = new Dictionary<string, object> { { "app", bapp }, { "creator", new { fs.UserId, fs.UserName }.ToBsonDocument() } };
             if (!string.IsNullOrWhiteSpace(fs.BusinessType)) metadata.Add("business", fs.BusinessType);

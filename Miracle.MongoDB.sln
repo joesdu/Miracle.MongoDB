@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Miracle.MongoDB", "Miracle.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "example.api", "example.api\example.api.csproj", "{522B9330-D8FC-4274-8512-C62DAD135B7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miracle.MongoDB.GridFS", "Miracle.MongoDB.GridFS\Miracle.MongoDB.GridFS.csproj", "{E457DEEA-736D-4937-B87F-28286E8446B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Miracle.MongoDB.GridFS", "Miracle.MongoDB.GridFS\Miracle.MongoDB.GridFS.csproj", "{E457DEEA-736D-4937-B87F-28286E8446B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "example.local.api", "example.local.api\example.local.api.csproj", "{0F3C6E26-719F-47FE-B0B1-53E0407E1910}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E457DEEA-736D-4937-B87F-28286E8446B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E457DEEA-736D-4937-B87F-28286E8446B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E457DEEA-736D-4937-B87F-28286E8446B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F3C6E26-719F-47FE-B0B1-53E0407E1910}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F3C6E26-719F-47FE-B0B1-53E0407E1910}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F3C6E26-719F-47FE-B0B1-53E0407E1910}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F3C6E26-719F-47FE-B0B1-53E0407E1910}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
