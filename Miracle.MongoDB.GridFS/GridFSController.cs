@@ -124,5 +124,19 @@ namespace Miracle.MongoDB.GridFS
         /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task Delete(string id) => await bucket.DeleteAsync(ObjectId.Parse(id));
+
+        /// <summary>
+        /// 批量删除文件
+        /// </summary>
+        /// <param name="ids">文件ID集合</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteMulti")]
+        public async Task DeleteMulti(string[] ids)
+        {
+            foreach (var id in ids)
+            {
+                await bucket.DeleteAsync(ObjectId.Parse(id));
+            }
+        }
     }
 }
