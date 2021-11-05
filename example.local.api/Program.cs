@@ -31,21 +31,4 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseSwagger().UseSwaggerUI();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", async () =>
-{
-    var o = Enumerable.Range(1, 5).Select(index => new Test
-    {
-        Sex = Random.Shared.Next(-20, 55),
-        Name = summaries[Random.Shared.Next(summaries.Length)]
-    }).ToArray();
-    await db.Test.InsertManyAsync(o);
-    return o;
-})
-.WithName("GetWeatherForecast");
-
 app.Run();

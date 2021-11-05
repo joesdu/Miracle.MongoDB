@@ -7,7 +7,6 @@ namespace example.local.api
     {
         public IMongoCollection<Test> Test => _database.GetCollection<Test>("test");
     }
-
     public class Test
     {
         public string Id { get; set; }
