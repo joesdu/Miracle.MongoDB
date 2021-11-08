@@ -25,10 +25,22 @@ namespace Miracle.MongoDB.GridFS
         /// <param name="info">关键字支持:文件名,用户名,用户ID,App名称以及业务名称模糊匹配</param>
         /// <returns></returns>
         [HttpPost("Infos")]
-        public async Task<object> Infos(KeywordPageInfo info)
+        public async Task<object> Infos(InfoSearch info)
         {
             var f = _bf.Empty;
-            if (!string.IsNullOrEmpty(info.Keyword)) f &= _bf.Or(_bf.Where(c => c.FileName.Contains(info.Keyword)), _bf.Where(c => c.UserName.Contains(info.Keyword)), _bf.Where(c => c.UserId.Contains(info.Keyword)), _bf.Where(c => c.App.Contains(info.Keyword)), _bf.Where(c => c.BusinessType.Contains(info.Keyword)));
+            if (!string.IsNullOrEmpty(info.FileName)) f &= _bf.Where(c => c.FileName.Contains(info.FileName));
+            if (!string.IsNullOrEmpty(info.UserName)) f &= _bf.Where(c => c.UserName.Contains(info.UserName));
+            if (!string.IsNullOrEmpty(info.UserId)) f &= _bf.Where(c => c.UserId.Contains(info.UserId));
+            if (!string.IsNullOrEmpty(info.App)) f &= _bf.Where(c => c.App.Contains(info.App));
+            if (!string.IsNullOrEmpty(info.BusinessType)) f &= _bf.Where(c => c.BusinessType.Contains(info.BusinessType));
+            if (info.Start is not null) f &= _bf.Gte(c => c.CreatTime, info.Start);
+            if (info.End is not null) f &= _bf.Lte(c => c.CreatTime, info.End);
+            if (!string.IsNullOrEmpty(info.Keyword)) f &= _bf.Or(
+                _bf.Where(c => c.FileName.Contains(info.Keyword)),
+                _bf.Where(c => c.UserName.Contains(info.Keyword)),
+                _bf.Where(c => c.UserId.Contains(info.Keyword)),
+                _bf.Where(c => c.App.Contains(info.Keyword)),
+                _bf.Where(c => c.BusinessType.Contains(info.Keyword)));
             var total = await Coll.CountDocumentsAsync(f);
             var list = await Coll.FindAsync(f, new()
             {
@@ -47,7 +59,6 @@ namespace Miracle.MongoDB.GridFS
         [HttpPost("UploadMulti")]
         public async Task<IEnumerable<GridFSItem>> PostMulti([FromForm] UploadGridFSMulti fs)
         {
-            if (string.IsNullOrWhiteSpace(fs.BusinessType)) throw new("BusinessType can not be null");
             if (fs.File is null || fs.File.Count == 0) throw new("no files find");
             if (fs.DeleteIds.Count > 0) foreach (var did in fs.DeleteIds) await bucket.DeleteAsync(ObjectId.Parse(did));
             var rsList = new List<GridFSItem>();
@@ -99,7 +110,6 @@ namespace Miracle.MongoDB.GridFS
         [HttpPost("UploadSingle")]
         public async Task<GridFSItem> PostSingle([FromForm] UploadGridFSSingle fs)
         {
-            if (string.IsNullOrWhiteSpace(fs.BusinessType)) throw new("BusinessType can not be null");
             if (fs.File is null) throw new("no files find");
             if (!string.IsNullOrEmpty(fs.DeleteId)) await bucket.DeleteAsync(ObjectId.Parse(fs.DeleteId));
             if (fs.File.ContentType is null) throw new("ContentType in File is null");

@@ -20,7 +20,6 @@ namespace Miracle.MongoDB.GridFS
         /// <summary>
         /// Business类型
         /// </summary>
-        [Required]
         public string BusinessType { get; set; }
         /// <summary>
         /// 可用于资源中心,记录所属目录id

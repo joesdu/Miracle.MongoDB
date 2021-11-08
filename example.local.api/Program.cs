@@ -1,4 +1,4 @@
-using example.local.api;
+using Miracle.MongoDB;
 using Miracle.MongoDB.Gen;
 using Miracle.MongoDB.GridFS;
 using Miracle.WebApi.Filters;
@@ -10,9 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "example.local.api", Version = "v1" }));
-builder.Services.AddCors(c => c.AddPolicy("AllowedHosts", c => c.WithOrigins(builder.Configuration.GetValue<string>("AllowedHosts").Split(",")).AllowAnyMethod().AllowAnyHeader()));
+builder.Services.AddCors(c => c.AddPolicy("AllowedHosts", c => c.WithOrigins(builder.Configuration["AllowedHosts"].Split(",")).AllowAnyMethod().AllowAnyHeader()));
 
-var db = builder.Services.AddMongoDbContext<DbContext>(builder.Configuration);
+var db = builder.Services.AddMongoDbContext<BaseDbContext>(builder.Configuration, showconnectionstring: true);
 
 builder.Services.AddMiracleGridFS(db._database, businessApp: "MiracleFS");
 

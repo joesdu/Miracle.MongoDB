@@ -7,9 +7,9 @@ using Miracle.WebApi.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddCors(c => c.AddPolicy("AllowedHosts", c => c.WithOrigins(builder.Configuration.GetValue<string>("AllowedHosts").Split(",")).AllowAnyMethod().AllowAnyHeader()));
+builder.Services.AddCors(c => c.AddPolicy("AllowedHosts", c => c.WithOrigins(builder.Configuration["AllowedHosts"].Split(",")).AllowAnyMethod().AllowAnyHeader()));
 
-var db = builder.Services.AddMongoDbContext<DbContext>(builder.Configuration);
+var db = builder.Services.AddMongoDbContext<DbContext>(builder.Configuration, showconnectionstring: true);
 
 builder.Services.AddMiracleGridFS(db._database, businessApp: "MiracleFS");
 

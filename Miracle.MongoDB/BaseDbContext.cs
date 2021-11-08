@@ -13,35 +13,13 @@ namespace Miracle.MongoDB
     {
         public IMongoClient _client;
         public IMongoDatabase _database;
-        public IMongoCollection<BsonDocument> GetCollection(string collection) => _database.GetCollection<BsonDocument>(collection);
-        private static readonly ConventionPackOptions options = new();
 
-        public static T CreateInstance<T>(CoreAppSetting dbSettings) where T : BaseDbContext
-        {
-            T t = Activator.CreateInstance<T>();
-            if (dbSettings.Servers.Count == 0) throw new("BaseDbContext Init error! host,port,db must not null");
-            MongoCredential credential = null;
-            if (dbSettings.Credential.User != null || dbSettings.Credential.Pwd != null) credential = MongoCredential.CreateCredential("admin", dbSettings.Credential.User, dbSettings.Credential.Pwd);
-            var settings = new MongoClientSettings
-            {
-                Credential = credential,
-                ReplicaSetName = dbSettings.ReplSetName
-            };
-            if (dbSettings.Servers.Count > 1 && !string.IsNullOrWhiteSpace(dbSettings.ReplSetName)) settings.Servers = dbSettings.Servers.Select(x => new MongoServerAddress(x.Host, x.Port));
-            else settings.Server = new(dbSettings.Servers[0].Host, dbSettings.Servers[0].Port);
-            if (dbSettings.ServerSelectionTimeout is not null and not 0)
-            {
-                settings.ServerSelectionTimeout = new(0, 0, 0, 0, dbSettings.ServerSelectionTimeout.Value);
-            }
-            t._client = new MongoClient(settings);
-            t._database = t._client.GetDatabase(dbSettings.Db);
-            return t;
-        }
+        private static readonly ConventionPackOptions options = new();
 
         public static T CreateInstance<T>(string connectionString, string db = "") where T : BaseDbContext
         {
             T t = Activator.CreateInstance<T>();
-            if (string.IsNullOrWhiteSpace(connectionString)) throw new("connectionString is empty");
+            if (string.IsNullOrWhiteSpace(connectionString)) throw new("ConnectionString is Empty");
             var mongoUrl = new MongoUrl(connectionString);
             t._client = new MongoClient(mongoUrl);
             var dbname = string.IsNullOrWhiteSpace(db) ? mongoUrl.DatabaseName : db;
