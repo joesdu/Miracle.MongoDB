@@ -10,22 +10,19 @@
 * 可配置部分类的Id字段不存为ObjectId,而存为string类型.
 * 自动转化数据类型到Mongodb数据类型
 ```csharp
-value.BsonType switch
-{
-    BsonType.Array => value.AsBsonArray.ToArray().Select(x => x.GetValue()),
-    BsonType.Boolean => value.AsBoolean,
-    BsonType.DateTime => value.ToUniversalTime(),
-    BsonType.Decimal128 => value.AsDecimal,
-    BsonType.Document => totype is null ? value.ToJson() : BsonSerializer.Deserialize(value.ToBsonDocument(), totype),
-    BsonType.Double => value.AsDouble,
-    BsonType.Int32 => value.AsInt32,
-    BsonType.Int64 => value.AsInt64,
-    BsonType.Null => null,
-    BsonType.ObjectId => value.AsString,
-    BsonType.String => value.AsString,
-    BsonType.Timestamp => value.AsString,
-    _ => null
-};
+BsonType.Array => value.AsBsonArray.ToArray().Select(x => x.GetValue()),
+BsonType.Boolean => value.AsBoolean,
+BsonType.DateTime => value.ToUniversalTime(),
+BsonType.Decimal128 => value.AsDecimal,
+BsonType.Document => totype is null ? value.ToJson() : BsonSerializer.Deserialize(value.ToBsonDocument(), totype),
+BsonType.Double => value.AsDouble,
+BsonType.Int32 => value.AsInt32,
+BsonType.Int64 => value.AsInt64,
+BsonType.Null => null,
+BsonType.ObjectId => value.AsString,
+BsonType.String => value.AsString,
+BsonType.Timestamp => value.AsString,
+_ => null
 ```
 ---
 # 如何使用?
