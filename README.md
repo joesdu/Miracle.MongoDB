@@ -49,7 +49,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // 添加Mongodb数据库服务
-var db = builder.Services.AddMongoDbContext<DbContext>(builder.Configuration);
+var db = builder.Services.AddMongoDbContext<DbContext>(builder.Configuration, showconnectionstring: true);
 // builder.Services.AddMongoDbContext<DbContext>(Configuration, c => c.AddConvertObjectIdToStringTypes(typeof(Test)));
 //
 
@@ -71,7 +71,7 @@ app.UseResponseTime();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseSwagger().UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "example.api v1"));
+app.UseSwagger().UseSwaggerUI();
 
 app.Run();
 ```
@@ -88,10 +88,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // 添加Mongodb数据库服务
-var db = builder.Services.AddMongoDbContext<DbContext>(builder.Configuration);
+var db = builder.Services.AddMongoDbContext<DbContext>(builder.Configuration, showconnectionstring: true);
 // builder.Services.AddMongoDbContext<DbContext>(Configuration, c => c.AddConvertObjectIdToStringTypes(typeof(Test)));
 // Miracle.MongoDB.GridFS 服务添加
-builder.Services.AddMiracleGridFS(db._database);
+builder.Services.AddMiracleGridFS(db._database, businessApp: "MiracleFS");
 builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "example.api", Version = "v1" }));
@@ -107,7 +107,7 @@ app.UseResponseTime();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseSwagger().UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "example.api v1"));
+app.UseSwagger().UseSwaggerUI();
 
 app.Run();
 ```
