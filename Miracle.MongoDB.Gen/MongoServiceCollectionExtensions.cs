@@ -5,8 +5,8 @@ namespace Miracle.MongoDB.Gen
 {
     /// <summary>
     /// 1.Use BaseDbContext.RegistConventionPack()
-    /// 1.create a DbContext use connectionString with [ConnectionStrings.Mongo in appsettings.json] or with [CONNECTIONSTRINGS_MONGO] setting value in environment variable
-    /// 3.inject DbContext use services.AddSingleton(db);
+    /// 1.Create a DbContext use connectionString with [ConnectionStrings.Mongo in appsettings.json] or with [CONNECTIONSTRINGS_MONGO] setting value in environment variable
+    /// 3.Inject DbContext use services.AddSingleton(db);
     /// </summary>
     public static class MongoServiceCollectionExtensions
     {

@@ -20,7 +20,7 @@ builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "example.
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
+if (app.Environment.IsDevelopment()) _ = app.UseDeveloperExceptionPage();
 app.UseGlobalException();
 app.UseResponseTime();
 app.UseCors("AllowedHosts");

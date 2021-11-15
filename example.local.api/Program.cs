@@ -21,7 +21,7 @@ builder.Services.AddControllers(c => c.Filters.Add<ActionExecuteFilter>());
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
+if (app.Environment.IsDevelopment()) _ = app.UseDeveloperExceptionPage();
 app.UseGlobalException();
 app.UseResponseTime();
 app.UseCors("AllowedHosts");

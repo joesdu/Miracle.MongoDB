@@ -159,6 +159,18 @@ namespace Miracle.MongoDB.GridFS
         }
 
         /// <summary>
+        /// 通过文件名下载
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [HttpGet("DownloadByName/{name}")]
+        public async Task<FileStreamResult> DownloadByName(string name)
+        {
+            var stream = await bucket.OpenDownloadStreamByNameAsync(name, new() { Seekable = true });
+            return File(stream, stream.FileInfo.Metadata["contentType"].AsString, stream.FileInfo.Filename);
+        }
+
+        /// <summary>
         /// 打开文件内容
         /// </summary>
         /// <param name="id">文件ID</param>
@@ -168,6 +180,21 @@ namespace Miracle.MongoDB.GridFS
         {
             var fi = await bucket.Find("{_id:ObjectId('" + id + "')}").SingleOrDefaultAsync() ?? throw new("no data find");
             var bytes = await bucket.DownloadAsBytesAsync(ObjectId.Parse(id), new GridFSDownloadOptions() { Seekable = true });
+            return File(bytes, fi.Metadata["contentType"].AsString, fi.Filename);
+        }
+
+
+        /// <summary>
+        /// 通过文件名打开文件
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [HttpGet("FileContentByname/{name}")]
+        public async Task<FileContentResult> FileContentByName(string name)
+        {
+            var f= Builders<GridFSFileInfo>.Filter;
+            var fi = await bucket.Find(f.Eq(c => c.Filename, name)).FirstOrDefaultAsync() ?? throw new("can't find this file");
+            var bytes = await bucket.DownloadAsBytesByNameAsync(name, new() { Seekable = true });
             return File(bytes, fi.Metadata["contentType"].AsString, fi.Filename);
         }
 

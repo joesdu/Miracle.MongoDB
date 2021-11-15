@@ -7,7 +7,7 @@
 	<LangVersion>latest</LangVersion>
 	<PackageIcon>icon.png</PackageIcon>
 	<RepositoryUrl>https://github.com/joesdu/Miracle.MongoDB</RepositoryUrl>
-	<Version>1.0.8</Version>
+	<Version>1.0.9</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +20,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Miracle.MongoDB" Version="1.0.5" />
+    <PackageReference Include="Miracle.MongoDB" Version="1.0.6" />
   </ItemGroup>
 
 </Project>
