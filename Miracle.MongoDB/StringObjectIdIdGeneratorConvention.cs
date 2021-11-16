@@ -14,8 +14,10 @@ namespace Miracle.MongoDB
         public void PostProcess(BsonClassMap classMap)
         {
             var idMemberMap = classMap.IdMemberMap;
-            if (idMemberMap == null || idMemberMap.IdGenerator != null) return;
-            if (idMemberMap.MemberType == typeof(string)) _ = idMemberMap.SetIdGenerator(StringObjectIdGenerator.Instance).SetSerializer(new StringSerializer(BsonType.ObjectId));
+            if (idMemberMap is not null && idMemberMap.IdGenerator is null)
+            {
+                if (idMemberMap.MemberType == typeof(string)) _ = idMemberMap.SetIdGenerator(StringObjectIdGenerator.Instance).SetSerializer(new StringSerializer(BsonType.ObjectId));
+            }
         }
     }
 }
