@@ -13,7 +13,6 @@ namespace Miracle.MongoDB
     {
         public void PostProcess(BsonClassMap classMap)
         {
-            //if (_options.IsNotConvertObjectIdToStringType(classMap.ClassType)) return;
             var idMemberMap = classMap.IdMemberMap;
             if (idMemberMap == null || idMemberMap.IdGenerator != null) return;
             if (idMemberMap.MemberType == typeof(string)) _ = idMemberMap.SetIdGenerator(StringObjectIdGenerator.Instance).SetSerializer(new StringSerializer(BsonType.ObjectId));
