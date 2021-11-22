@@ -1,4 +1,2 @@
-﻿namespace Miracle.MongoDB
-{
-    public interface IDbSet { }
-}
+﻿namespace Miracle.MongoDB;
+public interface IDbSet { }
