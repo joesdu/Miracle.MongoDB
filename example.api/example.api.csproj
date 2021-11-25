@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Miracle.MongoDB.Gen" Version="1.0.9" />
-    <PackageReference Include="Miracle.MongoDB.GridFS" Version="1.1.8" />
+    <PackageReference Include="Miracle.MongoDB.Gen" Version="1.0.10" />
+    <PackageReference Include="Miracle.MongoDB.GridFS" Version="1.1.9" />
     <PackageReference Include="Miracle.WebApi.Filters" Version="1.0.2" />
     <PackageReference Include="Miracle.WebApi.JsonConverters" Version="1.0.5" />
     <PackageReference Include="Miracle.WebApi.Middlewares" Version="1.0.1" />
