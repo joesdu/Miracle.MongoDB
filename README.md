@@ -40,11 +40,11 @@ _ => null
 ```
 
 ## 使用 Miracle.MongoDB.Gen ?
-* 使用Nuget安装 Miracle.MongoDB.Gen
+* 使用Nuget安装 Miracle.MongoDB
 * .Net 6 +
 ```csharp
 using example.api;
-using Miracle.MongoDB.Gen;
+using Miracle.MongoDB;
 using Miracle.WebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -79,11 +79,11 @@ app.Run();
 ```
 ---
 ## 使用 Miracle.MongoDB.GridFS
-* 使用 Nuget 安装 Miracle.MongoDB.GridFS 和 Miracle.MongoDB.Gen
+* 使用 Nuget 安装 Miracle.MongoDB.GridFS 和 Miracle.MongoDB
 * .Net 6 +
 ```csharp
 using example.api;
-using Miracle.MongoDB.Gen;
+using Miracle.MongoDB;
 using Miracle.WebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
