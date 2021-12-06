@@ -10,8 +10,8 @@ namespace Miracle.MongoDB;
 /// </summary>
 public class BaseDbContext : IDbSet
 {
-    public IMongoClient _client;
-    public IMongoDatabase _database;
+    public IMongoClient? _client;
+    public IMongoDatabase? _database;
 
     private static readonly ConventionPackOptions options = new();
 
@@ -26,7 +26,7 @@ public class BaseDbContext : IDbSet
         return t;
     }
 
-    public static void RegistConventionPack(Action<ConventionPackOptions> configure = null, bool first = true)
+    public static void RegistConventionPack(Action<ConventionPackOptions>? configure = null, bool first = true)
     {
         configure?.Invoke(options);
         if (first)
@@ -76,11 +76,12 @@ public class BaseDbContext : IDbSet
 
     private bool CreateCollections(string[] collections)
     {
+        if (_database is null) throw new("_database not prepared,please use this method after DbContext instantiation");
         try
         {
-            var exists = _database.ListCollectionNames().ToList();
-            var unexists = collections.Where(x => exists.Exists(c => c == x) == false);
-            foreach (var collection in unexists) _database.CreateCollection(collection);
+            var exists = _database?.ListCollectionNames().ToList();
+            var unexists = collections.Where(x => exists?.Exists(c => c == x) == false);
+            foreach (var collection in unexists) _database?.CreateCollection(collection);
             Console.WriteLine($"[🎉]CreateCollections:create collections success");
             return true;
         }

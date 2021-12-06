@@ -1,5 +1,4 @@
 using Miracle.MongoDB;
-using Miracle.MongoDB.Gen;
 using Miracle.MongoDB.GridFS;
 using Miracle.WebApi.Filters;
 using Miracle.WebApi.Middlewares;
@@ -14,7 +13,7 @@ builder.Services.AddCors(c => c.AddPolicy("AllowedHosts", c => c.WithOrigins(bui
 
 var db = builder.Services.AddMongoDbContext<BaseDbContext>(builder.Configuration, showconnectionstring: true);
 
-builder.Services.AddMiracleGridFS(db._database, businessApp: "MiracleFS");
+builder.Services.AddMiracleGridFS(db._database!, businessApp: "MiracleFS");
 
 builder.Services.AddControllers(c => c.Filters.Add<ActionExecuteFilter>());
 

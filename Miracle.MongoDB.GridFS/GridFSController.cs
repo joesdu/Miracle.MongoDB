@@ -27,25 +27,25 @@ public class GridFSController : ControllerBase
     public async Task<object> Infos(InfoSearch info)
     {
         var f = _bf.Empty;
-        if (!string.IsNullOrEmpty(info.FileName)) f &= _bf.Where(c => c.FileName.Contains(info.FileName));
-        if (!string.IsNullOrEmpty(info.UserName)) f &= _bf.Where(c => c.UserName.Contains(info.UserName));
-        if (!string.IsNullOrEmpty(info.UserId)) f &= _bf.Where(c => c.UserId.Contains(info.UserId));
-        if (!string.IsNullOrEmpty(info.App)) f &= _bf.Where(c => c.App.Contains(info.App));
-        if (!string.IsNullOrEmpty(info.BusinessType)) f &= _bf.Where(c => c.BusinessType.Contains(info.BusinessType));
+        if (!string.IsNullOrWhiteSpace(info.FileName)) f &= _bf.Where(c => c.FileName.Contains(info.FileName));
+        if (!string.IsNullOrWhiteSpace(info.UserName)) f &= _bf.Where(c => c.UserName.Contains(info.UserName));
+        if (!string.IsNullOrWhiteSpace(info.UserId)) f &= _bf.Where(c => c.UserId.Contains(info.UserId));
+        if (!string.IsNullOrWhiteSpace(info.App)) f &= _bf.Where(c => c.App.Contains(info.App));
+        if (!string.IsNullOrWhiteSpace(info.BusinessType)) f &= _bf.Where(c => c.BusinessType.Contains(info.BusinessType));
         if (info.Start is not null) f &= _bf.Gte(c => c.CreatTime, info.Start);
         if (info.End is not null) f &= _bf.Lte(c => c.CreatTime, info.End);
-        if (!string.IsNullOrEmpty(info.Keyword)) f &= _bf.Or(
-            _bf.Where(c => c.FileName.Contains(info.Keyword)),
-            _bf.Where(c => c.UserName.Contains(info.Keyword)),
-            _bf.Where(c => c.UserId.Contains(info.Keyword)),
-            _bf.Where(c => c.App.Contains(info.Keyword)),
-            _bf.Where(c => c.BusinessType.Contains(info.Keyword)));
+        if (!string.IsNullOrWhiteSpace(info.SearchKey)) f &= _bf.Or(
+            _bf.Where(c => c.FileName.Contains(info.SearchKey)),
+            _bf.Where(c => c.UserName.Contains(info.SearchKey)),
+            _bf.Where(c => c.UserId.Contains(info.SearchKey)),
+            _bf.Where(c => c.App.Contains(info.SearchKey)),
+            _bf.Where(c => c.BusinessType.Contains(info.SearchKey)));
         var total = await Coll.CountDocumentsAsync(f);
         var list = await Coll.FindAsync(f, new()
         {
             Sort = Builders<GridFSItemInfo>.Sort.Descending(c => c.CreatTime),
-            Limit = info.Size,
-            Skip = (info.Index - 1) * info.Size
+            Limit = info.PageSize,
+            Skip = (info.PageIndex - 1) * info.PageSize
         }).Result.ToListAsync();
         return PageResult.Wrap(total, list);
     }
@@ -110,7 +110,7 @@ public class GridFSController : ControllerBase
     public async Task<GridFSItem> PostSingle([FromForm] UploadGridFSSingle fs)
     {
         if (fs.File is null) throw new("no files find");
-        if (!string.IsNullOrEmpty(fs.DeleteId)) await bucket.DeleteAsync(ObjectId.Parse(fs.DeleteId));
+        if (!string.IsNullOrWhiteSpace(fs.DeleteId)) await bucket.DeleteAsync(ObjectId.Parse(fs.DeleteId));
         if (fs.File.ContentType is null) throw new("ContentType in File is null");
         var bapp = !string.IsNullOrWhiteSpace(fs.App) ? fs.App : GridFSExtensions.BusinessApp;
         if (string.IsNullOrWhiteSpace(bapp)) throw new("BusinessApp can't be null");

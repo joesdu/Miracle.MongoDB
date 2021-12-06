@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Miracle.MongoDB.Gen;
+namespace Miracle.MongoDB;
 /// <summary>
 /// 1.Use BaseDbContext.RegistConventionPack()
 /// 1.Create a DbContext use connectionString with [ConnectionStrings.Mongo in appsettings.json] or with [CONNECTIONSTRINGS_MONGO] setting value in environment variable

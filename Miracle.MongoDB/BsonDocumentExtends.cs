@@ -10,7 +10,7 @@ public static class BsonDocumentExtends
     /// <param name="ele">example:{rid:"aaa",info:{name:'xiaobai',gender:{k:'01',v:'男'}}}</param>
     /// <param name="hierarchicalNames">example:"info.gender.v"</param>
     /// <returns></returns>
-    public static BsonValue GetValueByHierarchicalNames(this BsonValue ele, string hierarchicalNames)
+    public static BsonValue? GetValueByHierarchicalNames(this BsonValue ele, string hierarchicalNames)
     {
         var names = hierarchicalNames.Split('.', ',', '_', '|');
         if (names.Length == 0) throw new("hierarchyNames is not correct");
@@ -26,7 +26,7 @@ public static class BsonDocumentExtends
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static object GetValue(this BsonValue value, Type totype = null) => value.BsonType switch
+    public static object? GetValue(this BsonValue value, Type? totype = null) => value.BsonType switch
     {
         BsonType.Array => value.AsBsonArray.ToArray().Select(x => x.GetValue()),
         BsonType.Boolean => value.AsBoolean,

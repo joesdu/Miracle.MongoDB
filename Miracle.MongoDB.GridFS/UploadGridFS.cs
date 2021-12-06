@@ -7,23 +7,23 @@ public class UploadGridFSInfo
     /// <summary>
     /// 用户ID
     /// </summary>
-    public string UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
     /// <summary>
     /// 用户名称
     /// </summary>
-    public string UserName { get; set; }
+    public string UserName { get; set; } = string.Empty;
     /// <summary>
     /// BusinessApp与该值至少要有一个.当该值存在时,优先取此值.
     /// </summary>
-    public string App { get; set; }
+    public string App { get; set; } = string.Empty;
     /// <summary>
     /// Business类型
     /// </summary>
-    public string BusinessType { get; set; }
+    public string BusinessType { get; set; } = string.Empty;
     /// <summary>
     /// 可用于资源中心,记录所属目录id
     /// </summary>
-    public string CategoryId { get; set; }
+    public string CategoryId { get; set; } = string.Empty;
 }
 
 public class UploadGridFSMulti : UploadGridFSInfo
@@ -36,7 +36,7 @@ public class UploadGridFSMulti : UploadGridFSInfo
     /// 上传文件(单或多文件)
     /// </summary>
     [Required]
-    public IFormFileCollection File { get; set; }
+    public IFormFileCollection? File { get; set; }
 }
 
 public class UploadGridFSSingle : UploadGridFSInfo
@@ -44,10 +44,10 @@ public class UploadGridFSSingle : UploadGridFSInfo
     /// <summary>
     /// 资源ID
     /// </summary>
-    public string DeleteId { get; set; }
+    public string DeleteId { get; set; } = string.Empty;
     /// <summary>
     /// 上传文件(单或多文件)
     /// </summary>
     [Required]
-    public IFormFile File { get; set; }
+    public IFormFile? File { get; set; }
 }

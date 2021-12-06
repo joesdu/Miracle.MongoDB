@@ -7,7 +7,7 @@ using MongoDB.Driver.GridFS;
 namespace Miracle.MongoDB.GridFS;
 public static class GridFSExtensions
 {
-    public static IServiceCollection AddMiracleGridFS(this IServiceCollection services, IMongoDatabase db, GridFSBucketOptions options = null, string businessApp = null, bool defalutdb = true, string iteminfo = "item.info")
+    public static IServiceCollection AddMiracleGridFS(this IServiceCollection services, IMongoDatabase db, GridFSBucketOptions? options = null, string businessApp = "", bool defalutdb = true, string iteminfo = "item.info")
     {
         if (db is null) throw new("db can't be null");
         BusinessApp = businessApp;
@@ -19,5 +19,5 @@ public static class GridFSExtensions
         _ = services.AddSingleton(db.Client.GetDatabase("miracle").GetCollection<GridFSItemInfo>(iteminfo));
         return services;
     }
-    public static string BusinessApp { get; set; }
+    public static string BusinessApp { get; set; } = string.Empty;
 }

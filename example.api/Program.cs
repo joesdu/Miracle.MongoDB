@@ -1,5 +1,5 @@
 using example.api;
-using Miracle.MongoDB.Gen;
+using Miracle.MongoDB;
 using Miracle.MongoDB.GridFS;
 using Miracle.WebApi.Filters;
 using Miracle.WebApi.Middlewares;
