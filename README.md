@@ -39,7 +39,7 @@ _ => null
 }
 ```
 
-## 使用 Miracle.MongoDB.Gen ?
+## 使用 Miracle.MongoDB ?
 * 使用Nuget安装 Miracle.MongoDB
 * .Net 6 +
 ```csharp
