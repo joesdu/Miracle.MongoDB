@@ -1,7 +1,6 @@
 using Miracle.MongoDB;
 using Miracle.MongoDB.GridFS;
-using Miracle.WebApi.Filters;
-using Miracle.WebApi.Middlewares;
+using Miracle.WebCore;
 
 var builder = WebApplication.CreateBuilder(args);
 

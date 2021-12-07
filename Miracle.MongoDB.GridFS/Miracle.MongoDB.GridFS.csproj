@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
 	<LangVersion>latest</LangVersion>
 	<RepositoryUrl>https://github.com/joesdu/Miracle.MongoDB</RepositoryUrl>
-	<Version>1.1.12</Version>
+	<Version>1.2.1</Version>
 	<Nullable>enable</Nullable>
 	<Authors>joesdu</Authors>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -24,7 +24,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Core" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Miracle.Common" Version="1.0.8" />
+    <PackageReference Include="Miracle.Common" Version="1.1.0" />
     <PackageReference Include="MongoDB.Driver.GridFS" Version="2.14.1" />
   </ItemGroup>
 
