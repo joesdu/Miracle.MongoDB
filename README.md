@@ -1,22 +1,9 @@
 ### Miracle.MongoDB
 
-#### 感谢
-<!-- Begin exclude from NuGet readme. -->
-
-<div>
-    <a href="https://www.jetbrains.com/?from=Miracle.MongoDB" align="right"><img src="https://raw.githubusercontent.com/joesdu/Miracle.MongoDB/main/documentation/jetbrains.svg" alt="JetBrains" class="logo-footer" width="72" align="left">
-    <a><br/>
-        
-Special thanks to [JetBrains](https://www.jetbrains.com/?from=Miracle.MongoDB) for supporting us with open-source licenses for their IDEs. </a>
-</div>
-
----
-<!-- End exclude from NuGet readme. -->
 [![LICENSE](https://img.shields.io/github/license/joesdu/Miracle.MongoDB)](https://img.shields.io/github/license/joesdu/Miracle.MongoDB) 
 ---
 - **一旦使用本开源项目以及引用了本项目或包含本项目代码的公司因为违反劳动法(包括但不限定非法裁员,超时用工,雇佣童工等)在任何法律诉讼中败诉的,项目作者有权利追讨本项目的使用费,或者直接不允许使用任何包含本项目的源代码!任何性质的`外包公司`或`996公司`需要使用本类库,请联系作者进行商业授权!其他企业或个人可随意使用不受限.**
 ---
-
 * 一个MongoDB驱动的服务包,方便使用MongoDB数据库.
 * 数据库中字段名驼峰命名,ID,Id自动转化成ObjectId.
 * 可配置部分类的Id字段不存为ObjectId,而存为string类型.
@@ -126,3 +113,15 @@ app.UseSwagger().UseSwaggerUI();
 app.Run();
 ```
 * 详细内容参见example.api项目
+#### 感谢
+<!-- Begin exclude from NuGet readme. -->
+---
+
+<div>
+    <a href="https://www.jetbrains.com/?from=Miracle.MongoDB" align="right"><img src="https://raw.githubusercontent.com/joesdu/Miracle.MongoDB/main/documentation/jetbrains.svg" alt="JetBrains" class="logo-footer" width="72" align="left">
+    <a><br/>
+        
+Special thanks to [JetBrains](https://www.jetbrains.com/?from=Miracle.MongoDB) for supporting us with open-source licenses for their IDEs. </a>
+</div>
+
+<!-- End exclude from NuGet readme. -->
