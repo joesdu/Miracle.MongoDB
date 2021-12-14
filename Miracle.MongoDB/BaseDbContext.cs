@@ -17,7 +17,7 @@ public class BaseDbContext : IDbSet
 
     public static T CreateInstance<T>(string connectionString, string db = "") where T : BaseDbContext
     {
-        T t = Activator.CreateInstance<T>();
+        var t = Activator.CreateInstance<T>();
         if (string.IsNullOrWhiteSpace(connectionString)) throw new("ConnectionString is Empty");
         var mongoUrl = new MongoUrl(connectionString);
         t._client = new MongoClient(mongoUrl);
@@ -40,7 +40,7 @@ public class BaseDbContext : IDbSet
                     new NamedIdMemberConvention("Id","ID"),//_id mapping Id or ID
                     new EnumRepresentationConvention(BsonType.String),//save enum value as string
                 };
-                ConventionRegistry.Register("commonpack", pack, x => true);
+                ConventionRegistry.Register("commonpack", pack, _ => true);
                 BsonSerializer.RegisterSerializer(typeof(DateTime), new DateTimeSerializer(DateTimeKind.Local));//to local time
                 BsonSerializer.RegisterSerializer(new DecimalSerializer(BsonType.Decimal128));//decimal to decimal default
             }
@@ -62,19 +62,17 @@ public class BaseDbContext : IDbSet
     {
         if (_database is null) throw new("_database not prepared,please use this method after DbContext instantiation");
         var transcolls = GetTransactColletions();
-        if (transcolls.Length > 0)
+        if (transcolls.Length <= 0) return;
+        var count = 1;
+        while (CreateCollections(transcolls) == false && count < 10)
         {
-            int count = 1;
-            while (CreateCollections(transcolls) == false && count < 10)
-            {
-                Console.WriteLine($"[🤪]BuildTransactCollections:{count} times error,will retry at next second.[{DateTime.Now.ToLongTimeString()}]");
-                count++;
-                Thread.Sleep(1000);
-            }
+            Console.WriteLine($"[🤪]BuildTransactCollections:{count} times error,will retry at next second.[{DateTime.Now.ToLongTimeString()}]");
+            count++;
+            Thread.Sleep(1000);
         }
     }
 
-    private bool CreateCollections(string[] collections)
+    private bool CreateCollections(IEnumerable<string> collections)
     {
         if (_database is null) throw new("_database not prepared,please use this method after DbContext instantiation");
         try
@@ -82,7 +80,7 @@ public class BaseDbContext : IDbSet
             var exists = _database?.ListCollectionNames().ToList();
             var unexists = collections.Where(x => exists?.Exists(c => c == x) == false);
             foreach (var collection in unexists) _database?.CreateCollection(collection);
-            Console.WriteLine($"[🎉]CreateCollections:create collections success");
+            Console.WriteLine("[🎉]CreateCollections:create collections success");
             return true;
         }
         catch

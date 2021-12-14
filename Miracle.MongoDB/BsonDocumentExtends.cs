@@ -14,17 +14,19 @@ public static class BsonDocumentExtends
     {
         var names = hierarchicalNames.Split('.', ',', '_', '|');
         if (names.Length == 0) throw new("hierarchyNames is not correct");
-        for (int i = 0; i < names.Length; i++)
+        foreach (var t in names)
         {
-            if (ele.IsBsonDocument && ele.AsBsonDocument.Contains(names[i])) ele = ele.AsBsonDocument[names[i]];
+            if (ele.IsBsonDocument && ele.AsBsonDocument.Contains(t)) ele = ele.AsBsonDocument[t];
             else return null;
         }
         return ele;
     }
+
     /// <summary>
     /// get object value from BsonValue
     /// </summary>
     /// <param name="value"></param>
+    /// <param name="totype"></param>
     /// <returns></returns>
     public static object? GetValue(this BsonValue value, Type? totype = null) => value.BsonType switch
     {

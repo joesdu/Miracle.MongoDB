@@ -35,18 +35,16 @@ public static class MongoServiceCollectionExtensions
     private static string ConnectionString(IConfiguration configuration, string connKey = "CONNECTIONSTRINGS_MONGO", bool showconnectionstring = false)
     {
         var connectionString = configuration[connKey];
-        if (!string.IsNullOrWhiteSpace(connectionString)) WriteInfo($"Get [CONNECTIONSTRINGS_MONGO] setting from env succeed");
+        if (!string.IsNullOrWhiteSpace(connectionString)) WriteInfo("Get [CONNECTIONSTRINGS_MONGO] setting from env succeed");
         else
         {
             connectionString = configuration.GetConnectionString("Mongo");
             WriteInfo("Get ConnectionStrings.Mongo in appsettings.json succeed");
         }
-        if (string.IsNullOrWhiteSpace(connectionString)) throw new($"💔:No [CONNECTIONSTRINGS_MONGO] setting in env and ConnectionStrings.Mongo in appsettings.json");
-        if (showconnectionstring)
-        {
-            WriteInfo($"ConnectionStrings is {connectionString}");
-            WriteTips("Set showconnectionstring = false in production environments");
-        }
+        if (string.IsNullOrWhiteSpace(connectionString)) throw new("💔:No [CONNECTIONSTRINGS_MONGO] setting in env and ConnectionStrings.Mongo in appsettings.json");
+        if (!showconnectionstring) return connectionString;
+        WriteInfo($"ConnectionStrings is {connectionString}");
+        WriteTips("Set showconnectionstring = false in production environments");
         return connectionString;
     }
     /// <summary>

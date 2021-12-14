@@ -34,8 +34,7 @@ public class GridFSController : ControllerBase
         if (!string.IsNullOrWhiteSpace(info.BusinessType)) f &= _bf.Where(c => c.BusinessType.Contains(info.BusinessType));
         if (info.Start is not null) f &= _bf.Gte(c => c.CreatTime, info.Start);
         if (info.End is not null) f &= _bf.Lte(c => c.CreatTime, info.End);
-        if (!string.IsNullOrWhiteSpace(info.SearchKey)) f &= _bf.Or(
-            _bf.Where(c => c.FileName.Contains(info.SearchKey)),
+        if (!string.IsNullOrWhiteSpace(info.SearchKey)) f &= _bf.Or(_bf.Where(c => c.FileName.Contains(info.SearchKey)),
             _bf.Where(c => c.UserName.Contains(info.SearchKey)),
             _bf.Where(c => c.UserId.Contains(info.SearchKey)),
             _bf.Where(c => c.App.Contains(info.SearchKey)),
@@ -53,8 +52,6 @@ public class GridFSController : ControllerBase
     /// <summary>
     /// 添加一个或多个文件
     /// </summary>
-    /// <param name="dto">UploadGridFS</param>
-    /// <returns></returns>
     [HttpPost("UploadMulti")]
     public async Task<IEnumerable<GridFSItem>> PostMulti([FromForm] UploadGridFSMulti fs)
     {
@@ -104,8 +101,6 @@ public class GridFSController : ControllerBase
     /// <summary>
     /// 添加一个或多个文件
     /// </summary>
-    /// <param name="dto">UploadGridFS</param>
-    /// <returns></returns>
     [HttpPost("UploadSingle")]
     public async Task<GridFSItem> PostSingle([FromForm] UploadGridFSSingle fs)
     {
@@ -177,7 +172,7 @@ public class GridFSController : ControllerBase
     [HttpGet("FileContent/{id}")]
     public async Task<FileContentResult> FileContent(string id)
     {
-        var fi = await bucket.Find("{_id:ObjectId('" + id + "')}").SingleOrDefaultAsync() ?? throw new("no data find");
+        var fi = await (await bucket.FindAsync("{_id:ObjectId('" + id + "')}")).SingleOrDefaultAsync() ?? throw new("no data find");
         var bytes = await bucket.DownloadAsBytesAsync(ObjectId.Parse(id), new GridFSDownloadOptions() { Seekable = true });
         return File(bytes, fi.Metadata["contentType"].AsString, fi.Filename);
     }
@@ -192,7 +187,7 @@ public class GridFSController : ControllerBase
     public async Task<FileContentResult> FileContentByName(string name)
     {
         var f = Builders<GridFSFileInfo>.Filter;
-        var fi = await bucket.Find(f.Eq(c => c.Filename, name)).FirstOrDefaultAsync() ?? throw new("can't find this file");
+        var fi = await (await bucket.FindAsync(f.Eq(c => c.Filename, name))).FirstOrDefaultAsync() ?? throw new("can't find this file");
         var bytes = await bucket.DownloadAsBytesByNameAsync(name, new() { Seekable = true });
         return File(bytes, fi.Metadata["contentType"].AsString, fi.Filename);
     }

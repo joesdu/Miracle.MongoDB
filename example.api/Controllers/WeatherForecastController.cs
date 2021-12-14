@@ -15,7 +15,7 @@ public class WeatherForecastController : ControllerBase
     [HttpGet]
     public async Task<object> Get()
     {
-        var o = Enumerable.Range(1, 5).Select(index => new Test
+        var o = Enumerable.Range(1, 5).Select(_ => new Test
         {
             Sex = Random.Shared.Next(-20, 55),
             Name = Summaries[Random.Shared.Next(Summaries.Length)]

@@ -4,7 +4,7 @@ using MongoDB.Driver;
 namespace example.api;
 public class DbContext : BaseDbContext
 {
-    public IMongoCollection<Test> Test => _database.GetCollection<Test>("test");
+    public IMongoCollection<Test> Test => _database?.GetCollection<Test>("test");
 }
 
 public class Test

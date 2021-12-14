@@ -6,11 +6,11 @@ using Miracle.WebCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddCors(c => c.AddPolicy("AllowedHosts", c => c.WithOrigins(builder.Configuration["AllowedHosts"].Split(",")).AllowAnyMethod().AllowAnyHeader()));
+builder.Services.AddCors(c => c.AddPolicy("AllowedHosts", s => s.WithOrigins(builder.Configuration["AllowedHosts"].Split(",")).AllowAnyMethod().AllowAnyHeader()));
 
 var db = builder.Services.AddMongoDbContext<DbContext>(builder.Configuration, showconnectionstring: true);
 
-builder.Services.AddMiracleGridFS(db._database, businessApp: "MiracleFS");
+builder.Services.AddMiracleGridFS(db._database!, businessApp: "MiracleFS");
 
 builder.Services.AddControllers(c => c.Filters.Add<ActionExecuteFilter>());
 

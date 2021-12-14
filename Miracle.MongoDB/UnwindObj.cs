@@ -4,13 +4,14 @@ namespace Miracle.MongoDB;
 public class UnwindObj<T>
 {
     /// <summary>
-    /// 1.T as List<T>,use for Projection,
+    /// 1.T as List,use for Projection,
     /// 2.T as single Object,use for MongoDB array field Unwind result
     /// </summary>
     [BsonElement("Obj")]
     public T? Obj { get; set; }
+
     /// <summary>
-    /// when T as List<T>,record Count
+    /// when T as List,record Count
     /// </summary>
     [BsonElement("Count")]
     public int Count { get; set; }
