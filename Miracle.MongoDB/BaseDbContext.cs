@@ -8,7 +8,7 @@ namespace Miracle.MongoDB;
 /// <summary>
 /// mongodb base context
 /// </summary>
-public class BaseDbContext
+public class BaseDbContext : IDbSet
 {
     public IMongoClient? _client;
     public IMongoDatabase? _database;

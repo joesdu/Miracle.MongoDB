@@ -9,6 +9,6 @@ public class GridFSItemInfo
     public string UserName { get; set; } = string.Empty;
     public string App { get; set; } = string.Empty;
     public string BusinessType { get; set; } = string.Empty;
-    public string CategoryId { get; set; } = string.Empty;
+    public string? CategoryId { get; set; }
     public DateTime CreatTime { get; set; }
 }

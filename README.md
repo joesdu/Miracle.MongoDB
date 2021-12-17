@@ -45,7 +45,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMongoDbContext<BaseDbContext>(builder.Configuration, new ()
 {
     ShowConnectionString = true,
-    // ConventionPackOptionsAction = c => c.AddConvertObjectIdToStringTypes(typeof(Test))
+    // ConventionPackOptionsAction = c => c.AddConvertObjectIdToStringTypes(typeof(Test)),
+    // First = true
 });
 
 builder.Services.AddControllers();
@@ -55,10 +56,7 @@ builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "example.
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
+if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 
 app.UseGlobalException();
 app.UseResponseTime();
@@ -86,11 +84,41 @@ using Miracle.WebApi.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
 // 添加Mongodb数据库服务
-var db = builder.Services.AddMongoDbContext<DbContext>(builder.Configuration, showconnectionstring: true);
-// builder.Services.AddMongoDbContext<DbContext>(Configuration, c => c.AddConvertObjectIdToStringTypes(typeof(Test)));
+//var db = await builder.Services.AddMongoDbContext<BaseDbContext>(builder.Configuration, new()
+//{
+//    ShowConnectionString = true,
+//    ConventionPackOptionsAction = c => c.AddConvertObjectIdToStringTypes(typeof(Test)),
+//    First = true
+//});
+
 // Miracle.MongoDB.GridFS 服务添加
-builder.Services.AddMiracleGridFS(db._database, businessApp: "MiracleFS");
+//builder.Services.AddMiracleGridFS(db._database!, new()
+//{
+//    BusinessApp = "MiracleFS",
+//    Options = new ()
+//    {
+//        BucketName = "",
+//        ChunkSizeBytes = 1024,
+//        DisableMD5 = true,
+//        ReadConcern = new () {},
+//        ReadPreference = ReadPreference.Primary,
+//        WriteConcern = WriteConcern.Unacknowledged
+//    }
+//    DefalutDB = true,
+//    ItemInfo = "item.info"
+//});
+
+// 若是使用GridFS库,可以直接同时添加MongoDB服务和GridFS服务
+await builder.Services.AddMiracleMongoAndGridFS<BaseDbContext>(builder.Configuration, new()
+{
+    ShowConnectionString = true
+}, new()
+{
+    BusinessApp = "MiracleFS"
+});
+
 builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "example.api", Version = "v1" }));

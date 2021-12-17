@@ -23,7 +23,7 @@ public class UploadGridFSInfo
     /// <summary>
     /// 可用于资源中心,记录所属目录id
     /// </summary>
-    public string CategoryId { get; set; } = string.Empty;
+    public string? CategoryId { get; set; }
 }
 
 public class UploadGridFSMulti : UploadGridFSInfo
@@ -44,7 +44,7 @@ public class UploadGridFSSingle : UploadGridFSInfo
     /// <summary>
     /// 资源ID
     /// </summary>
-    public string DeleteId { get; set; } = string.Empty;
+    public string? DeleteId { get; set; }
     /// <summary>
     /// 上传文件(单或多文件)
     /// </summary>

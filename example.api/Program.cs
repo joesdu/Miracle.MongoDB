@@ -1,5 +1,4 @@
 using example.api;
-using Miracle.MongoDB;
 using Miracle.MongoDB.GridFS;
 using Miracle.WebCore;
 
@@ -8,9 +7,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddCors(c => c.AddPolicy("AllowedHosts", s => s.WithOrigins(builder.Configuration["AllowedHosts"].Split(",")).AllowAnyMethod().AllowAnyHeader()));
 
-var db = builder.Services.AddMongoDbContext<DbContext>(builder.Configuration, showconnectionstring: true);
+//await builder.Services.AddMongoDbContext<DbContext>(builder.Configuration, new()
+//{
+//    ShowConnectionString = false
+//});
 
-builder.Services.AddMiracleGridFS(db._database!, businessApp: "MiracleFS");
+await builder.Services.AddMiracleMongoAndGridFS<DbContext>(builder.Configuration, new ()
+{
+    ShowConnectionString = false
+},new()
+{
+    BusinessApp="MiracleFS"
+});
 
 builder.Services.AddControllers(c => c.Filters.Add<ActionExecuteFilter>());
 

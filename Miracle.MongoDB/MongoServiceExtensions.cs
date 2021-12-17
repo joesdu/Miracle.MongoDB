@@ -56,7 +56,7 @@ public static class MongoServiceExtensions
     /// <param name="configuration">.Net Configuration</param>
     /// <param name="options">DbContextOptions</param>
     /// <returns></returns>
-    public static async Task<T> AddMongoDbContext<T>(this IServiceCollection services, IConfiguration configuration, DbContextOptions? options) where T : BaseDbContext
+    public static async Task<T> AddMongoDbContext<T>(this IServiceCollection services, IConfiguration configuration, MiracleMongoOptions? options) where T : BaseDbContext
     {
         var connectionString = ConnectionString(configuration, showconnectionstring: options?.ShowConnectionString);
         BaseDbContext.RegistryConventionPack(options?.ConventionPackOptionsAction, options?.First);
@@ -75,7 +75,7 @@ public static class MongoServiceExtensions
     /// <param name="connKey">Connection Keyword</param>
     /// <param name="options">DbContextOptions</param>
     /// <returns></returns>
-    public static async Task<T> AddMongoDbContextWithSpecificKey<T>(this IServiceCollection services, IConfiguration configuration, string connKey, DbContextOptions? options) where T : BaseDbContext
+    public static async Task<T> AddMongoDbContextWithSpecificKey<T>(this IServiceCollection services, IConfiguration configuration, string connKey, MiracleMongoOptions? options) where T : BaseDbContext
     {
         var connectionString = ConnectionString(configuration, connKey, options?.ShowConnectionString);
         BaseDbContext.RegistryConventionPack(options?.ConventionPackOptionsAction, options?.First);
@@ -93,7 +93,7 @@ public static class MongoServiceExtensions
     /// <param name="configuration">.Net Configuration</param>
     /// <param name="options">DbContextOptions</param>
     /// <returns></returns>
-    public static async Task<T> AddMongoDbSet<T>(this IServiceCollection services, IConfiguration configuration, DbContextOptions? options) where T : BaseDbContext, IDbSet
+    public static async Task<T> AddMongoDbSet<T>(this IServiceCollection services, IConfiguration configuration, MiracleMongoOptions? options) where T : BaseDbContext, IDbSet
     {
         var connectionString = ConnectionString(configuration, showconnectionstring: options?.ShowConnectionString);
         BaseDbContext.RegistryConventionPack(options?.ConventionPackOptionsAction, options?.First);

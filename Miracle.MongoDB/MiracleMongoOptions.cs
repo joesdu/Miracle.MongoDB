@@ -1,5 +1,5 @@
 ﻿namespace Miracle.MongoDB;
-public class DbContextOptions
+public class MiracleMongoOptions
 {
     /// <summary>
     /// ConventionPackOptions Action

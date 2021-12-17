@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Miracle.MongoDB;
 
 namespace example.api.Controllers;
 [ApiController]
@@ -8,9 +7,9 @@ public class WeatherForecastController : ControllerBase
 {
     private readonly DbContext db;
 
-    public WeatherForecastController(IDbSet context) => db = (DbContext)context;
+    public WeatherForecastController(DbContext context) => db = context;
 
-    private static readonly string[] Summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
+    private static readonly string[] Summaries = { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
 
     [HttpGet]
     public async Task<object> Get()
