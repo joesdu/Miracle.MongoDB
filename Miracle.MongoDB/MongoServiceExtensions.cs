@@ -54,12 +54,12 @@ public static class MongoServiceExtensions
     /// <typeparam name="T">Miracle.MongoDB.DbContext</typeparam>
     /// <param name="services">.Net Services</param>
     /// <param name="configuration">.Net Configuration</param>
-    /// <param name="options">DbContextOptions</param>
+    /// <param name="dboptions">DbContextOptions</param>
     /// <returns></returns>
-    public static async Task<T> AddMongoDbContext<T>(this IServiceCollection services, IConfiguration configuration, MiracleMongoOptions? options) where T : BaseDbContext
+    public static async Task<T> AddMongoDbContext<T>(this IServiceCollection services, IConfiguration configuration, MiracleMongoOptions? dboptions) where T : BaseDbContext
     {
-        var connectionString = ConnectionString(configuration, showconnectionstring: options?.ShowConnectionString);
-        BaseDbContext.RegistryConventionPack(options?.ConventionPackOptionsAction, options?.First);
+        var connectionString = ConnectionString(configuration, showconnectionstring: dboptions?.ShowConnectionString);
+        BaseDbContext.RegistryConventionPack(dboptions?.ConventionPackOptionsAction, dboptions?.First);
         var db = BaseDbContext.CreateInstance<T>(connectionString);
         await db.BuildTransactCollections();
         _ = services.AddSingleton(db);
@@ -73,12 +73,12 @@ public static class MongoServiceExtensions
     /// <param name="services">.Net Services</param>
     /// <param name="configuration">.Net Configuration</param>
     /// <param name="connKey">Connection Keyword</param>
-    /// <param name="options">DbContextOptions</param>
+    /// <param name="dboptions">DbContextOptions</param>
     /// <returns></returns>
-    public static async Task<T> AddMongoDbContextWithSpecificKey<T>(this IServiceCollection services, IConfiguration configuration, string connKey, MiracleMongoOptions? options) where T : BaseDbContext
+    public static async Task<T> AddMongoDbContextWithSpecificKey<T>(this IServiceCollection services, IConfiguration configuration, string connKey, MiracleMongoOptions? dboptions) where T : BaseDbContext
     {
-        var connectionString = ConnectionString(configuration, connKey, options?.ShowConnectionString);
-        BaseDbContext.RegistryConventionPack(options?.ConventionPackOptionsAction, options?.First);
+        var connectionString = ConnectionString(configuration, connKey, dboptions?.ShowConnectionString);
+        BaseDbContext.RegistryConventionPack(dboptions?.ConventionPackOptionsAction, dboptions?.First);
         var db = BaseDbContext.CreateInstance<T>(connectionString);
         await db.BuildTransactCollections();
         _ = services.AddSingleton(db);
@@ -91,12 +91,12 @@ public static class MongoServiceExtensions
     /// <typeparam name="T">Miracle.MongoDB.IDbSet</typeparam>
     /// <param name="services">.Net Services</param>
     /// <param name="configuration">.Net Configuration</param>
-    /// <param name="options">DbContextOptions</param>
+    /// <param name="dboptions">DbContextOptions</param>
     /// <returns></returns>
-    public static async Task<T> AddMongoDbSet<T>(this IServiceCollection services, IConfiguration configuration, MiracleMongoOptions? options) where T : BaseDbContext, IDbSet
+    public static async Task<T> AddMongoDbSet<T>(this IServiceCollection services, IConfiguration configuration, MiracleMongoOptions? dboptions) where T : BaseDbContext, IDbSet
     {
-        var connectionString = ConnectionString(configuration, showconnectionstring: options?.ShowConnectionString);
-        BaseDbContext.RegistryConventionPack(options?.ConventionPackOptionsAction, options?.First);
+        var connectionString = ConnectionString(configuration, showconnectionstring: dboptions?.ShowConnectionString);
+        BaseDbContext.RegistryConventionPack(dboptions?.ConventionPackOptionsAction, dboptions?.First);
         var db = BaseDbContext.CreateInstance<T>(connectionString);
         await db.BuildTransactCollections();
         _ = services.AddSingleton(typeof(IDbSet), db);

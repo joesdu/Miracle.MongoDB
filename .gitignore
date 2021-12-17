@@ -372,3 +372,4 @@ target/
 */*.iml
 *.iml
 /example.local.api/appsettings.json
+/example.api/appsettings.json
