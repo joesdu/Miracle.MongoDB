@@ -56,7 +56,14 @@ public class GridFSController : ControllerBase
     public async Task<IEnumerable<GridFSItem>> PostMulti([FromForm] UploadGridFSMulti fs)
     {
         if (fs.File is null || fs.File.Count == 0) throw new("no files find");
-        if (fs.DeleteIds.Count > 0) foreach (var did in fs.DeleteIds) await bucket.DeleteAsync(ObjectId.Parse(did));
+        if (fs.DeleteIds.Count > 0)
+        {
+            foreach (var did in fs.DeleteIds)
+            {
+                await bucket.DeleteAsync(ObjectId.Parse(did));
+            }
+            _ = await Coll.DeleteManyAsync(c => fs.DeleteIds.Contains(c.FileId));
+        }
         var rsList = new List<GridFSItem>();
         var infos = new List<GridFSItemInfo>();
         foreach (var item in fs.File)
@@ -105,7 +112,11 @@ public class GridFSController : ControllerBase
     public async Task<GridFSItem> PostSingle([FromForm] UploadGridFSSingle fs)
     {
         if (fs.File is null) throw new("no files find");
-        if (!string.IsNullOrWhiteSpace(fs.DeleteId)) await bucket.DeleteAsync(ObjectId.Parse(fs.DeleteId));
+        if (!string.IsNullOrWhiteSpace(fs.DeleteId))
+        {
+            await bucket.DeleteAsync(ObjectId.Parse(fs.DeleteId));
+            _ = await Coll.DeleteOneAsync(c => c.FileId == fs.DeleteId);
+        }
         if (fs.File.ContentType is null) throw new("ContentType in File is null");
         var bapp = !string.IsNullOrWhiteSpace(fs.App) ? fs.App : GridFSExtensions.BusinessApp;
         if (string.IsNullOrWhiteSpace(bapp)) throw new("BusinessApp can't be null");

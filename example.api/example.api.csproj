@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Miracle.MongoDB.GridFS" Version="1.2.6" />
+    <PackageReference Include="Miracle.MongoDB.GridFS" Version="1.2.7" />
     <PackageReference Include="Miracle.WebCore" Version="1.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
