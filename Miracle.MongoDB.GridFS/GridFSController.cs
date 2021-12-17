@@ -56,14 +56,7 @@ public class GridFSController : ControllerBase
     public async Task<IEnumerable<GridFSItem>> PostMulti([FromForm] UploadGridFSMulti fs)
     {
         if (fs.File is null || fs.File.Count == 0) throw new("no files find");
-        if (fs.DeleteIds.Count > 0)
-        {
-            foreach (var did in fs.DeleteIds)
-            {
-                await bucket.DeleteAsync(ObjectId.Parse(did));
-            }
-            _ = await Coll.DeleteManyAsync(c => fs.DeleteIds.Contains(c.FileId));
-        }
+        if (fs.DeleteIds.Count > 0) await DeleteMulti(fs.DeleteIds);
         var rsList = new List<GridFSItem>();
         var infos = new List<GridFSItemInfo>();
         foreach (var item in fs.File)
@@ -112,11 +105,7 @@ public class GridFSController : ControllerBase
     public async Task<GridFSItem> PostSingle([FromForm] UploadGridFSSingle fs)
     {
         if (fs.File is null) throw new("no files find");
-        if (!string.IsNullOrWhiteSpace(fs.DeleteId))
-        {
-            await bucket.DeleteAsync(ObjectId.Parse(fs.DeleteId));
-            _ = await Coll.DeleteOneAsync(c => c.FileId == fs.DeleteId);
-        }
+        if (!string.IsNullOrWhiteSpace(fs.DeleteId)) await Delete(fs.DeleteId);
         if (fs.File.ContentType is null) throw new("ContentType in File is null");
         var bapp = !string.IsNullOrWhiteSpace(fs.App) ? fs.App : GridFSExtensions.BusinessApp;
         if (string.IsNullOrWhiteSpace(bapp)) throw new("BusinessApp can't be null");
@@ -224,8 +213,27 @@ public class GridFSController : ControllerBase
     [HttpDelete("{id}")]
     public async Task Delete(string id)
     {
-        await bucket.DeleteAsync(ObjectId.Parse(id));
+        await Delete(new List<string> { id });
         _ = await Coll.DeleteOneAsync(c => c.FileId == id);
+    }
+
+    private async Task Delete(List<string> ids)
+    {
+        try
+        {
+            foreach (var id in ids)
+            {
+                await bucket.DeleteAsync(ObjectId.Parse(id));
+            }
+        }
+        catch (Exception e)
+        {
+            if (!e.Message.Contains("GridFS file not found: file id"))
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
     }
 
     /// <summary>
@@ -234,12 +242,9 @@ public class GridFSController : ControllerBase
     /// <param name="ids">文件ID集合</param>
     /// <returns></returns>
     [HttpDelete("DeleteMulti")]
-    public async Task DeleteMulti(string[] ids)
+    public async Task DeleteMulti(List<string> ids)
     {
-        foreach (var id in ids)
-        {
-            await bucket.DeleteAsync(ObjectId.Parse(id));
-        }
+        await Delete(ids);
         _ = await Coll.DeleteManyAsync(c => ids.Contains(c.FileId));
     }
 }
