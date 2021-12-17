@@ -26,21 +26,20 @@ public class BaseDbContext
         return t;
     }
 
-    public static void RegistryConventionPack(Action<ConventionPackOptions>? configure = null, bool first = true)
+    public static void RegistryConventionPack(Action<ConventionPackOptions>? configure = null, bool? first = true)
     {
         configure?.Invoke(options);
-        if (first)
+        if (first is not null & first is true)
         {
             try
             {
-                var pack = new ConventionPack
+                ConventionRegistry.Register("commonpack", new ConventionPack
                 {
                     new CamelCaseElementNameConvention(),//property to camel
                     new IgnoreExtraElementsConvention(true),//
                     new NamedIdMemberConvention("Id","ID"),//_id mapping Id or ID
                     new EnumRepresentationConvention(BsonType.String),//save enum value as string
-                };
-                ConventionRegistry.Register("commonpack", pack, _ => true);
+                }, _ => true);
                 BsonSerializer.RegisterSerializer(typeof(DateTime), new DateTimeSerializer(DateTimeKind.Local));//to local time
                 BsonSerializer.RegisterSerializer(new DecimalSerializer(BsonType.Decimal128));//decimal to decimal default
             }
@@ -50,7 +49,7 @@ public class BaseDbContext
             }
         }
         var idpack = new ConventionPack
-        { 
+        {
             new StringObjectIdIdGeneratorConvention()//Id[string] mapping ObjectId
         };
         ConventionRegistry.Register($"idpack{Guid.NewGuid()}", idpack, x => options.IsConvertObjectIdToStringType(x) == false);
@@ -58,13 +57,13 @@ public class BaseDbContext
 
     protected virtual string[] GetTransactColletions() => Array.Empty<string>();
 
-    public void BuildTransactCollections()
+    public async Task BuildTransactCollections()
     {
         if (_database is null) throw new("_database not prepared,please use this method after DbContext instantiation");
         var transcolls = GetTransactColletions();
         if (transcolls.Length <= 0) return;
         var count = 1;
-        while (CreateCollections(transcolls) == false && count < 10)
+        while (await CreateCollections(transcolls) == false && count < 10)
         {
             Console.WriteLine($"[🤪]BuildTransactCollections:{count} times error,will retry at next second.[{DateTime.Now.ToLongTimeString()}]");
             count++;
@@ -72,14 +71,14 @@ public class BaseDbContext
         }
     }
 
-    private bool CreateCollections(IEnumerable<string> collections)
+    private async Task<bool> CreateCollections(IEnumerable<string> collections)
     {
         if (_database is null) throw new("_database not prepared,please use this method after DbContext instantiation");
         try
         {
-            var exists = _database?.ListCollectionNames().ToList();
+            var exists = (await _database?.ListCollectionNamesAsync()!).ToList();
             var unexists = collections.Where(x => exists?.Exists(c => c == x) == false);
-            foreach (var collection in unexists) _database?.CreateCollection(collection);
+            foreach (var collection in unexists) await _database?.CreateCollectionAsync(collection)!;
             Console.WriteLine("[🎉]CreateCollections:create collections success");
             return true;
         }
