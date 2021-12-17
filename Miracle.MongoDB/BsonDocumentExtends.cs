@@ -7,7 +7,7 @@ public static class BsonDocumentExtends
     /// <summary>
     /// get BsonValue from BsonDocument by hierarchicalNames
     /// </summary>
-    /// <param name="ele">example:{rid:"aaa",info:{name:'xiaobai',gender:{k:'01',v:'男'}}}</param>
+    /// <param name="ele">example:{rid:"aaa",info:{name:'Bai',gender:{k:'01',v:'男'}}}</param>
     /// <param name="hierarchicalNames">example:"info.gender.v"</param>
     /// <returns></returns>
     public static BsonValue? GetValueByHierarchicalNames(this BsonValue ele, string hierarchicalNames)

@@ -3,16 +3,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Miracle.MongoDB;
 /// <summary>
-/// 1.Use BaseDbContext.RegistConventionPack()
+/// 1.Use BaseDbContext.RegistryConventionPack()
 /// 1.Create a DbContext use connectionString with [ConnectionStrings.Mongo in appsettings.json] or with [CONNECTIONSTRINGS_MONGO] setting value in environment variable
 /// 3.Inject DbContext use services.AddSingleton(db);
 /// </summary>
-public static class MongoServiceCollectionExtensions
+public static class MongoServiceExtensions
 {
     private static void WriteInfo(string info)
     {
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write($"🔗[Info]: ");
+        Console.Write("🔗[Info]: ");
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine(info);
         Console.ForegroundColor = ConsoleColor.White;
@@ -20,7 +20,7 @@ public static class MongoServiceCollectionExtensions
     private static void WriteTips(string tips)
     {
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write($"💡[Tips]: ");
+        Console.Write("💡[Tips]: ");
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine(tips);
         Console.ForegroundColor = ConsoleColor.White;
@@ -54,33 +54,33 @@ public static class MongoServiceCollectionExtensions
     /// <param name="services">.Net Services</param>
     /// <param name="configuration">.Net Configuration</param>
     /// <param name="conventionPackOptionsAction">ConventionPackOptions Action</param>
-    /// <param name="first">RegistConventionPack first</param>
+    /// <param name="first">RegistryConventionPack first</param>
     /// <param name="showconnectionstring">Show Connection String,Recommendation: The development environment is turned on and closed in the formal environment</param>
     /// <returns></returns>
     public static T AddMongoDbContext<T>(this IServiceCollection services, IConfiguration configuration, Action<ConventionPackOptions>? conventionPackOptionsAction = null, bool first = true, bool showconnectionstring = false) where T : BaseDbContext
     {
         var connectionString = ConnectionString(configuration, showconnectionstring: showconnectionstring);
-        BaseDbContext.RegistConventionPack(conventionPackOptionsAction, first);
+        BaseDbContext.RegistryConventionPack(conventionPackOptionsAction, first);
         var db = BaseDbContext.CreateInstance<T>(connectionString);
         db.BuildTransactCollections();
         _ = services.AddSingleton(db);
         return db;
     }
     /// <summary>
-    /// Add DbContext Service Use Custom connection string with custom keyname
+    /// Add DbContext Service Use Custom connection string with custom key name
     /// </summary>
     /// <typeparam name="T">Miracle.MongoDB.BaseDbContext</typeparam>
     /// <param name="services">.Net Services</param>
     /// <param name="configuration">.Net Configuration</param>
     /// <param name="connKey">Connection Keyword</param>
     /// <param name="conventionPackOptionsAction">ConventionPackOptions Action</param>
-    /// <param name="first">RegistConventionPack first</param>
+    /// <param name="first">RegistryConventionPack first</param>
     /// <param name="showconnectionstring">Show Connection String,Recommendation: The development environment is turned on and closed in the formal environment</param>
     /// <returns></returns>
-    public static T AddMongoDbContextSpecificConnKey<T>(this IServiceCollection services, IConfiguration configuration, string connKey, Action<ConventionPackOptions>? conventionPackOptionsAction = null, bool first = true, bool showconnectionstring = false) where T : BaseDbContext
+    public static T AddMongoDbContextWithSpecificKey<T>(this IServiceCollection services, IConfiguration configuration, string connKey, Action<ConventionPackOptions>? conventionPackOptionsAction = null, bool first = true, bool showconnectionstring = false) where T : BaseDbContext
     {
         var connectionString = ConnectionString(configuration, connKey, showconnectionstring);
-        BaseDbContext.RegistConventionPack(conventionPackOptionsAction, first);
+        BaseDbContext.RegistryConventionPack(conventionPackOptionsAction, first);
         var db = BaseDbContext.CreateInstance<T>(connectionString);
         db.BuildTransactCollections();
         _ = services.AddSingleton(db);
@@ -93,13 +93,13 @@ public static class MongoServiceCollectionExtensions
     /// <param name="services">.Net Services</param>
     /// <param name="configuration">.Net Configuration</param>
     /// <param name="conventionPackOptionsAction">ConventionPackOptions Action</param>
-    /// <param name="first">RegistConventionPack first</param>
+    /// <param name="first">RegistryConventionPack first</param>
     /// <param name="showconnectionstring">Show Connection String,Recommendation: The development environment is turned on and closed in the formal environment</param>
     /// <returns></returns>
     public static T AddMongoDbSet<T>(this IServiceCollection services, IConfiguration configuration, Action<ConventionPackOptions>? conventionPackOptionsAction = null, bool first = true, bool showconnectionstring = false) where T : BaseDbContext, IDbSet
     {
         var connectionString = ConnectionString(configuration, showconnectionstring: showconnectionstring);
-        BaseDbContext.RegistConventionPack(conventionPackOptionsAction, first);
+        BaseDbContext.RegistryConventionPack(conventionPackOptionsAction, first);
         var db = BaseDbContext.CreateInstance<T>(connectionString);
         db.BuildTransactCollections();
         _ = services.AddSingleton(typeof(IDbSet), db);

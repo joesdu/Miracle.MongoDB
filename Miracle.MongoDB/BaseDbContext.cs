@@ -8,7 +8,7 @@ namespace Miracle.MongoDB;
 /// <summary>
 /// mongodb base context
 /// </summary>
-public class BaseDbContext : IDbSet
+public class BaseDbContext
 {
     public IMongoClient? _client;
     public IMongoDatabase? _database;
@@ -26,7 +26,7 @@ public class BaseDbContext : IDbSet
         return t;
     }
 
-    public static void RegistConventionPack(Action<ConventionPackOptions>? configure = null, bool first = true)
+    public static void RegistryConventionPack(Action<ConventionPackOptions>? configure = null, bool first = true)
     {
         configure?.Invoke(options);
         if (first)
@@ -53,7 +53,7 @@ public class BaseDbContext : IDbSet
         { 
             new StringObjectIdIdGeneratorConvention()//Id[string] mapping ObjectId
         };
-        ConventionRegistry.Register("idpack" + Guid.NewGuid().ToString(), idpack, x => options.IsConvertObjectIdToStringType(x) == false);
+        ConventionRegistry.Register($"idpack{Guid.NewGuid()}", idpack, x => options.IsConvertObjectIdToStringType(x) == false);
     }
 
     protected virtual string[] GetTransactColletions() => Array.Empty<string>();

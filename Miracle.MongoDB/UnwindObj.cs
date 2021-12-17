@@ -16,7 +16,7 @@ public class UnwindObj<T>
     [BsonElement("Count")]
     public int Count { get; set; }
     /// <summary>
-    /// record array field element's index before Unwindss
+    /// record array field element's index before Unwinds
     /// </summary>
     [BsonElement("Index")]
     public int Index { get; set; }
