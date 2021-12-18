@@ -9,7 +9,7 @@ namespace Miracle.MongoDB.GridFS;
 public static class GridFSExtensions
 {
     public static string BusinessApp { get; set; } = string.Empty;
-    public static IServiceCollection AddMiracleGridFS(this IServiceCollection services, IMongoDatabase db, MiracleGridFSOptions? fsoptions)
+    public static IServiceCollection AddMiracleGridFS(this IServiceCollection services, IMongoDatabase db, MiracleGridFSOptions? fsoptions = null)
     {
         if (db is null) throw new("db can't be null");
         fsoptions ??= new();
@@ -23,7 +23,7 @@ public static class GridFSExtensions
         return services;
     }
 
-    public static async Task<IServiceCollection> AddMiracleMongoAndGridFS<T>(this IServiceCollection services, IConfiguration configuration, MiracleMongoOptions? dboption, MiracleGridFSOptions? fsoptions) where T : BaseDbContext
+    public static async Task<IServiceCollection> AddMiracleMongoAndGridFS<T>(this IServiceCollection services, IConfiguration configuration, MiracleMongoOptions? dboption = null, MiracleGridFSOptions? fsoptions = null) where T : BaseDbContext
     {
         var db = await services.AddMongoDbContext<T>(configuration, dboption);
         return AddMiracleGridFS(services, db._database!, fsoptions);

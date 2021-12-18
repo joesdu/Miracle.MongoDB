@@ -12,12 +12,9 @@ builder.Services.AddCors(c => c.AddPolicy("AllowedHosts", s => s.WithOrigins(bui
 //    ShowConnectionString = false
 //});
 
-await builder.Services.AddMiracleMongoAndGridFS<DbContext>(builder.Configuration, new ()
+await builder.Services.AddMiracleMongoAndGridFS<DbContext>(builder.Configuration, fsoptions: new()
 {
-    ShowConnectionString = false
-},new()
-{
-    BusinessApp="MiracleFS"
+    BusinessApp = "MiracleFS"
 });
 
 builder.Services.AddControllers(c => c.Filters.Add<ActionExecuteFilter>());

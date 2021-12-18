@@ -22,7 +22,7 @@ builder.Services.AddCors(c => c.AddPolicy("AllowedHosts", s => s.WithOrigins(bui
 await builder.Services.AddMiracleMongoAndGridFS<BaseDbContext>(builder.Configuration, new()
 {
     ShowConnectionString = true
-}, new()
+}, fsoptions:new()
 {
     BusinessApp = "MiracleFS",
     //Options = new ()
