@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Miracle.Common;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -56,7 +57,7 @@ public class GridFSController : ControllerBase
     public async Task<IEnumerable<GridFSItem>> PostMulti([FromForm] UploadGridFSMulti fs)
     {
         if (fs.File is null || fs.File.Count == 0) throw new("no files find");
-        if (fs.DeleteIds.Count > 0) await DeleteMulti(fs.DeleteIds);
+        if (fs.DeleteIds.Count > 0) await Delete(fs.DeleteIds.ToArray());
         var rsList = new List<GridFSItem>();
         var infos = new List<GridFSItemInfo>();
         foreach (var item in fs.File)
@@ -208,43 +209,25 @@ public class GridFSController : ControllerBase
     /// <summary>
     /// 删除文件
     /// </summary>
-    /// <param name="id">文件ID</param>
-    /// <returns></returns>
-    [HttpDelete("{id}")]
-    public async Task Delete(string id)
-    {
-        await Delete(new List<string> { id });
-        _ = await Coll.DeleteOneAsync(c => c.FileId == id);
-    }
-
-    private async Task Delete(List<string> ids)
-    {
-        try
-        {
-            foreach (var id in ids)
-            {
-                await bucket.DeleteAsync(ObjectId.Parse(id));
-            }
-        }
-        catch (Exception e)
-        {
-            if (!e.Message.Contains("GridFS file not found: file id"))
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-    }
-
-    /// <summary>
-    /// 批量删除文件
-    /// </summary>
     /// <param name="ids">文件ID集合</param>
     /// <returns></returns>
-    [HttpDelete("DeleteMulti")]
-    public async Task DeleteMulti(List<string> ids)
+    [HttpDelete]
+    public async Task Delete(params string[] ids)
     {
-        await Delete(ids);
+        var sb = new StringBuilder();
+        for (var i = 0; i < ids.Length; i++)
+        {
+            if (i != 0) sb.Append(",");
+            _ = sb.Append($"ObjectId(\"{ids[i]}\")");
+        }
+        var fi = await (await bucket.FindAsync("{_id:{$in:[" + sb + "]}}")).ToListAsync();
+        var fids = fi.Select(c => c.Id.ToString()).ToArray();
+        async Task DeleteSingleFile()
+        {
+            foreach (var id in fids) await bucket.DeleteAsync(ObjectId.Parse(id));
+        }
+        if (fids.Length > 6) await Task.Run(DeleteSingleFile);
+        else await DeleteSingleFile();
         _ = await Coll.DeleteManyAsync(c => ids.Contains(c.FileId));
     }
 }

@@ -9,20 +9,32 @@ namespace Miracle.MongoDB;
 /// </summary>
 public static class MongoServiceExtensions
 {
-    private static void WriteInfo(string info)
+    private enum WriteType
     {
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write("🔗[Info]: ");
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine(info);
-        Console.ForegroundColor = ConsoleColor.White;
+        Info,
+        Tips
     }
-    private static void WriteTips(string tips)
+    private static void WriteTxt(string txt, WriteType type = WriteType.Info)
     {
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write("💡[Tips]: ");
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine(tips);
+        string header;
+        ConsoleColor forecolor;
+        switch (type)
+        {
+            case WriteType.Info:
+                header = "🔗[Info]: ";
+                forecolor = ConsoleColor.Cyan;
+                break;
+            case WriteType.Tips:
+                header = "💡[Tips]: ";
+                forecolor = ConsoleColor.Yellow;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+        Console.Write(header);
+        Console.ForegroundColor = forecolor;
+        Console.WriteLine(txt);
         Console.ForegroundColor = ConsoleColor.White;
     }
     /// <summary>
@@ -35,16 +47,16 @@ public static class MongoServiceExtensions
     private static string ConnectionString(IConfiguration configuration, string connKey = "CONNECTIONSTRINGS_MONGO", bool? showconnectionstring = false)
     {
         var connectionString = configuration[connKey];
-        if (!string.IsNullOrWhiteSpace(connectionString)) WriteInfo("Get [CONNECTIONSTRINGS_MONGO] setting from env succeed");
+        if (!string.IsNullOrWhiteSpace(connectionString)) WriteTxt("Get [CONNECTIONSTRINGS_MONGO] setting from env succeed");
         else
         {
             connectionString = configuration.GetConnectionString("Mongo");
-            WriteInfo("Get ConnectionStrings.Mongo in appsettings.json succeed");
+            WriteTxt("Get ConnectionStrings.Mongo in appsettings.json succeed");
         }
         if (string.IsNullOrWhiteSpace(connectionString)) throw new("💔:No [CONNECTIONSTRINGS_MONGO] setting in env and ConnectionStrings.Mongo in appsettings.json");
         if (showconnectionstring is not null & showconnectionstring is not false) return connectionString;
-        WriteInfo($"ConnectionStrings is {connectionString}");
-        WriteTips("Set showconnectionstring = false in production environments");
+        WriteTxt($"ConnectionStrings is {connectionString}");
+        WriteTxt("Set showconnectionstring = false in production environments", WriteType.Tips);
         return connectionString;
     }
 
