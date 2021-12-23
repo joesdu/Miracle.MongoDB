@@ -95,7 +95,7 @@ public class GridFSController : ControllerBase
                 CreatTime = DateTime.Now
             });
         }
-        await Coll.InsertManyAsync(infos);
+        _ = Coll.InsertManyAsync(infos);
         return rsList;
     }
 
@@ -119,7 +119,7 @@ public class GridFSController : ControllerBase
             Metadata = new(metadata)
         };
         var oid = await bucket.UploadFromStreamAsync(fs.File.FileName, fs.File.OpenReadStream(), upo);
-        await Coll.InsertOneAsync(new()
+        _ = Coll.InsertOneAsync(new()
         {
             FileId = oid.ToString(),
             FileName = fs.File.FileName,
@@ -200,10 +200,11 @@ public class GridFSController : ControllerBase
     /// <param name="newname">新名称</param>
     /// <returns></returns>
     [HttpPut("{id}/Rename/{newname}")]
-    public async Task Rename(string id, string newname)
+    public Task Rename(string id, string newname)
     {
-        await bucket.RenameAsync(ObjectId.Parse(id), newname);
-        _ = await Coll.UpdateOneAsync(c => c.FileId == id, Builders<GridFSItemInfo>.Update.Set(c => c.FileName, newname));
+        _ = bucket.RenameAsync(ObjectId.Parse(id), newname);
+        _ = Coll.UpdateOneAsync(c => c.FileId == id, Builders<GridFSItemInfo>.Update.Set(c => c.FileName, newname));
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -217,17 +218,17 @@ public class GridFSController : ControllerBase
         var sb = new StringBuilder();
         for (var i = 0; i < ids.Length; i++)
         {
-            if (i != 0) sb.Append(",");
+            if (i != 0) _ = sb.Append(',');
             _ = sb.Append($"ObjectId(\"{ids[i]}\")");
         }
         var fi = await (await bucket.FindAsync("{_id:{$in:[" + sb + "]}}")).ToListAsync();
         var fids = fi.Select(c => c.Id.ToString()).ToArray();
-        async Task DeleteSingleFile()
+        Task DeleteSingleFile()
         {
-            foreach (var id in fids) await bucket.DeleteAsync(ObjectId.Parse(id));
+            foreach (var id in fids) _ = bucket.DeleteAsync(ObjectId.Parse(id));
+            return Task.CompletedTask;
         }
-        if (fids.Length > 6) await Task.Run(DeleteSingleFile);
-        else await DeleteSingleFile();
-        _ = await Coll.DeleteManyAsync(c => ids.Contains(c.FileId));
+        _ = fids.Length > 6 ? Task.Run(DeleteSingleFile) : DeleteSingleFile();
+        _ = Coll.DeleteManyAsync(c => ids.Contains(c.FileId));
     }
 }

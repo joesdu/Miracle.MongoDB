@@ -4,12 +4,19 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
 	<LangVersion>latest</LangVersion>
-	<PackageProjectUrl>https://www.nuget.org/packages/Miracle.MongoDB</PackageProjectUrl>
-	<Version>1.3.0</Version>
+	<Version>1.3.2</Version>
 	<Nullable>enable</Nullable>
 	<Authors>joesdu</Authors>
-	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<RepositoryUrl>https://github.com/joesdu/Miracle.MongoDB</RepositoryUrl>
+	<PackageProjectUrl>https://github.com/joesdu/Miracle.MongoDB</PackageProjectUrl>
+	<Description>一个 MongoDB 驱动的服务包,方便使用 MongoDB 数据库.
+数据库中字段名驼峰命名,ID,Id 自动转化成 ObjectId.
+可配置部分类的 Id 字段不存为 ObjectId,而存为 string 类型.
+自动转化数据类型到 MongoDB 数据类型
+自动本地化 MOngoDB 时间类型</Description>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +24,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+	<None Include="..\LICENSE" Pack="true" PackagePath=""/>
   </ItemGroup>
 
   <ItemGroup>

@@ -78,7 +78,7 @@ public class BaseDbContext : IDbSet
         {
             var exists = (await _database?.ListCollectionNamesAsync()!).ToList();
             var unexists = collections.Where(x => exists?.Exists(c => c == x) == false);
-            foreach (var collection in unexists) await _database?.CreateCollectionAsync(collection)!;
+            foreach (var collection in unexists) _ = _database?.CreateCollectionAsync(collection)!;
             Console.WriteLine("[🎉]CreateCollections:create collections success");
             return true;
         }
