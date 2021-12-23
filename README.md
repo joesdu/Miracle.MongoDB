@@ -146,7 +146,7 @@ app.Run();
 ## <!-- Begin exclude from NuGet readme. -->
 
 <div>
-    <a href="https://www.jetbrains.com/?from=Miracle.MongoDB" align="right"><img src="https://raw.githubusercontent.com/joesdu/Miracle.MongoDB/main/documentation/jetbrains.svg" alt="JetBrains" class="logo-footer" width="72" align="left">
+    <a href="https://www.jetbrains.com/?from=Miracle.MongoDB" align="right"><img src="https://raw.githubusercontent.com/joesdu/Miracle.MongoDB/main/jetbrains.svg" alt="JetBrains" class="logo-footer" width="72" align="left">
     <a><br/>
         
 Special thanks to [JetBrains](https://www.jetbrains.com/?from=Miracle.MongoDB) for supporting us with open-source licenses for their IDEs. </a>
