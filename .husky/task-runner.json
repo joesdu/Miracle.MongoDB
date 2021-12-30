@@ -8,7 +8,7 @@
          "include": [ "**/*.cs", "**/*.vb" ],
 	     "windows": {
             "command": "pwsh",
-            "args": ["/c", "dotnet format './{你的项目资源管理名称}.sln'" ]
+            "args": ["/c", "dotnet format './Miracle.MongoDB.sln'" ]
          }
       },
       {
