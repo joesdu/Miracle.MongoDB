@@ -1,0 +1,41 @@
+{
+	"tasks": [
+		{
+			"name": "Formate Code",
+			"output": "always",
+			"command": "bash",
+			"args": [
+				"dotnet format './*.sln'",
+				"--include",
+				"${staged}"
+			],
+			"include": [
+				"**/*.cs",
+				"**/*.vb"
+			],
+			"windows": {
+				"command": "pwsh",
+				"args": [
+					"/c",
+					"dotnet format './{你的项目资源管理名称}.sln'"
+				]
+			}
+		},
+		{
+			"name": "Welcome",
+			"output": "always",
+			"command": "bash",
+			"args": [
+				"-c",
+				"echo Husky.Net is awesome!"
+			],
+			"windows": {
+				"command": "cmd",
+				"args": [
+					"/c",
+					"echo Husky.Net is awesome!"
+				]
+			}
+		}
+	]
+}
