@@ -24,7 +24,12 @@
     "Mongo": "mongodb链接字符串"
   },
   // 或者使用
-  "CONNECTIONSTRINGS_MONGO": "mongodb链接字符串"
+  "CONNECTIONSTRINGS_MONGO": "mongodb链接字符串",
+  // 添加文件缓存
+  "MiracleStaticFile": {
+    "VirtualPath": "/miraclefs",
+    "PhysicalPath": "D:\\test"
+  }
 }
 ```
 
@@ -72,6 +77,13 @@ app.Run();
 ---
 
 ##### 使用 Miracle.MongoDB.GridFS
+
+###### ChangeLogs
+- 1.3.6
+- 新增文件缓存到物理路径,便于文件在线使用.
+- 添加物理路径清理接口.(可通过调用该接口定时清理所有缓存的文件)
+
+---
 
 - 使用 Nuget 安装 Miracle.MongoDB.GridFS 和 Miracle.MongoDB
 - .Net 6 +
@@ -133,6 +145,19 @@ app.UseResponseTime();
 
 app.UseAuthorization();
 
+// 或者使用MiracleStaticFileSettings类型绑定
+// var staticfile = builder.Configuration.GetSection(MiracleStaticFileSettings.Postion).Get<MiracleStaticFileSettings>();
+// 获取物理路径是否存在,不存在就创建一个
+if (!Directory.Exists(builder.Configuration["MiracleStaticFile:PhysicalPath"]))
+{
+    Directory.CreateDirectory(builder.Configuration["MiracleStaticFile:PhysicalPath"]);
+}
+// 添加静态文件服务
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(builder.Configuration["MiracleStaticFile:PhysicalPath"]),
+    RequestPath = builder.Configuration["MiracleStaticFile:VirtualPath"]
+});
 app.MapControllers();
 app.UseSwagger().UseSwaggerUI();
 

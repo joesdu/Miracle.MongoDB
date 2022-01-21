@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using Miracle.MongoDB;
 using Miracle.MongoDB.GridFS;
 using Miracle.WebCore;
@@ -9,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "example.local.api", Version = "v1" }));
 builder.Services.AddCors(c => c.AddPolicy("AllowedHosts", s => s.WithOrigins(builder.Configuration["AllowedHosts"].Split(",")).AllowAnyMethod().AllowAnyHeader()));
-
 //var db = await builder.Services.AddMongoDbContext<BaseDbContext>(builder.Configuration, new()
 //{
 //    ShowConnectionString = true
@@ -49,6 +49,17 @@ app.UseCors("AllowedHosts");
 
 app.UseAuthorization();
 
+var miraclefile = builder.Configuration.GetSection(MiracleStaticFileSettings.Postion).Get<MiracleStaticFileSettings>();
+
+if (!Directory.Exists(miraclefile.PhysicalPath))
+{
+    _ = Directory.CreateDirectory(miraclefile.PhysicalPath);
+}
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(miraclefile.PhysicalPath),
+    RequestPath = miraclefile.VirtualPath
+});
 app.MapControllers();
 app.UseSwagger().UseSwaggerUI();
 

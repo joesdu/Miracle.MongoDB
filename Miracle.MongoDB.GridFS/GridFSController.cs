@@ -1,22 +1,25 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Miracle.Common;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
+using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace Miracle.MongoDB.GridFS;
 [ApiController]
 [Route("[controller]")]
 public class GridFSController : ControllerBase
 {
-    private readonly GridFSBucket bucket;
+    private readonly GridFSBucket Bucket;
     private readonly IMongoCollection<GridFSItemInfo> Coll;
     private readonly FilterDefinitionBuilder<GridFSItemInfo> _bf = Builders<GridFSItemInfo>.Filter;
-    public GridFSController(GridFSBucket bucket, IMongoCollection<GridFSItemInfo> collection)
+    private readonly MiracleStaticFileSettings FileSetting;
+    public GridFSController(GridFSBucket bucket, IMongoCollection<GridFSItemInfo> collection, IConfiguration config)
     {
-        this.bucket = bucket;
+        Bucket = bucket;
         Coll = collection;
+        FileSetting = config.GetSection(MiracleStaticFileSettings.Postion).Get<MiracleStaticFileSettings>();
     }
 
     /// <summary>
@@ -73,7 +76,7 @@ public class GridFSController : ControllerBase
                 BatchSize = fs.File.Count,
                 Metadata = new(metadata)
             };
-            var oid = await bucket.UploadFromStreamAsync(item.FileName, item.OpenReadStream(), upo);
+            var oid = await Bucket.UploadFromStreamAsync(item.FileName, item.OpenReadStream(), upo);
             rsList.Add(new()
             {
                 FileId = oid.ToString(),
@@ -118,7 +121,7 @@ public class GridFSController : ControllerBase
             BatchSize = 1,
             Metadata = new(metadata)
         };
-        var oid = await bucket.UploadFromStreamAsync(fs.File.FileName, fs.File.OpenReadStream(), upo);
+        var oid = await Bucket.UploadFromStreamAsync(fs.File.FileName, fs.File.OpenReadStream(), upo);
         _ = Coll.InsertOneAsync(new()
         {
             FileId = oid.ToString(),
@@ -149,7 +152,7 @@ public class GridFSController : ControllerBase
     [HttpGet("Download/{id}")]
     public async Task<FileStreamResult> Download(string id)
     {
-        var stream = await bucket.OpenDownloadStreamAsync(ObjectId.Parse(id), new() { Seekable = true });
+        var stream = await Bucket.OpenDownloadStreamAsync(ObjectId.Parse(id), new() { Seekable = true });
         return File(stream, stream.FileInfo.Metadata["contentType"].AsString, stream.FileInfo.Filename);
     }
 
@@ -161,7 +164,7 @@ public class GridFSController : ControllerBase
     [HttpGet("DownloadByName/{name}")]
     public async Task<FileStreamResult> DownloadByName(string name)
     {
-        var stream = await bucket.OpenDownloadStreamByNameAsync(name, new() { Seekable = true });
+        var stream = await Bucket.OpenDownloadStreamByNameAsync(name, new() { Seekable = true });
         return File(stream, stream.FileInfo.Metadata["contentType"].AsString, stream.FileInfo.Filename);
     }
 
@@ -173,8 +176,8 @@ public class GridFSController : ControllerBase
     [HttpGet("FileContent/{id}")]
     public async Task<FileContentResult> FileContent(string id)
     {
-        var fi = await (await bucket.FindAsync("{_id:ObjectId('" + id + "')}")).SingleOrDefaultAsync() ?? throw new("no data find");
-        var bytes = await bucket.DownloadAsBytesAsync(ObjectId.Parse(id), new GridFSDownloadOptions() { Seekable = true });
+        var fi = await (await Bucket.FindAsync("{_id:ObjectId('" + id + "')}")).SingleOrDefaultAsync() ?? throw new("no data find");
+        var bytes = await Bucket.DownloadAsBytesAsync(ObjectId.Parse(id), new GridFSDownloadOptions() { Seekable = true });
         return File(bytes, fi.Metadata["contentType"].AsString, fi.Filename);
     }
 
@@ -188,9 +191,53 @@ public class GridFSController : ControllerBase
     public async Task<FileContentResult> FileContentByName(string name)
     {
         var f = Builders<GridFSFileInfo>.Filter;
-        var fi = await (await bucket.FindAsync(f.Eq(c => c.Filename, name))).FirstOrDefaultAsync() ?? throw new("can't find this file");
-        var bytes = await bucket.DownloadAsBytesByNameAsync(name, new() { Seekable = true });
+        var fi = await (await Bucket.FindAsync(f.Eq(c => c.Filename, name))).FirstOrDefaultAsync() ?? throw new("can't find this file");
+        var bytes = await Bucket.DownloadAsBytesByNameAsync(name, new() { Seekable = true });
         return File(bytes, fi.Metadata["contentType"].AsString, fi.Filename);
+    }
+
+    /// <summary>
+    /// 打开文件内容
+    /// </summary>
+    /// <param name="id">文件ID</param>
+    /// <returns></returns>
+    [HttpGet("FileUri/{id}")]
+    public async Task<object> FileUri(string id)
+    {
+        if (string.IsNullOrWhiteSpace(FileSetting.PhysicalPath)) throw new("RealPath is null");
+        var fi = await (await Bucket.FindAsync("{_id:ObjectId('" + id + "')}")).SingleOrDefaultAsync() ?? throw new("no data find");
+        await using var mongoStream = await Bucket.OpenDownloadStreamAsync(ObjectId.Parse(id), new() { Seekable = true });
+        await using var fsWrite = new FileStream($"{FileSetting.PhysicalPath}{Path.DirectorySeparatorChar}{fi.Filename}", FileMode.Create);
+        var buffer = new byte[1024 * 1024];
+        while (true)
+        {
+            var readCount = mongoStream.Read(buffer, 0, buffer.Length);
+            fsWrite.Write(buffer, 0, readCount);
+            if (readCount < buffer.Length) break;
+        }
+        return new
+        {
+            Uri = $"{HttpContext.Request.Scheme}:{HttpContext.Request.Host}{FileSetting.VirtualPath}/{fi.Filename}"
+        };
+    }
+
+    /// <summary>
+    /// 清理文件夹
+    /// </summary>
+    /// <returns></returns>
+    [HttpDelete("ClearTempDir")]
+    public Task ClearDir()
+    {
+        if (!Directory.Exists(FileSetting.PhysicalPath)) return Task.CompletedTask;
+        try
+        {
+            Directory.Delete(FileSetting.PhysicalPath, true);
+        }
+        catch (IOException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -202,7 +249,10 @@ public class GridFSController : ControllerBase
     [HttpPut("{id}/Rename/{newname}")]
     public Task Rename(string id, string newname)
     {
-        _ = bucket.RenameAsync(ObjectId.Parse(id), newname);
+        var filename = Coll.Find(c => c.FileId == id).Project(c => c.FileName).SingleOrDefaultAsync().Result;
+        var path = $"{FileSetting.PhysicalPath}/{filename}";
+        if (System.IO.File.Exists(path)) System.IO.File.Delete(path);
+        _ = Bucket.RenameAsync(ObjectId.Parse(id), newname);
         _ = Coll.UpdateOneAsync(c => c.FileId == id, Builders<GridFSItemInfo>.Update.Set(c => c.FileName, newname));
         return Task.CompletedTask;
     }
@@ -221,11 +271,20 @@ public class GridFSController : ControllerBase
             if (i != 0) _ = sb.Append(',');
             _ = sb.Append($"ObjectId(\"{ids[i]}\")");
         }
-        var fi = await (await bucket.FindAsync("{_id:{$in:[" + sb + "]}}")).ToListAsync();
-        var fids = fi.Select(c => c.Id.ToString()).ToArray();
+        var fi = await (await Bucket.FindAsync("{_id:{$in:[" + sb + "]}}")).ToListAsync();
+        var fids = fi.Select(c => new
+        {
+            Id = c.Id.ToString(),
+            FileName = c.Filename
+        }).ToArray();
         Task DeleteSingleFile()
         {
-            foreach (var id in fids) _ = bucket.DeleteAsync(ObjectId.Parse(id));
+            foreach (var item in fids)
+            {
+                _ = Bucket.DeleteAsync(ObjectId.Parse(item.Id));
+                var path = $"{FileSetting.PhysicalPath}/{item.FileName}";
+                if (System.IO.File.Exists(path)) System.IO.File.Delete(path);
+            }
             return Task.CompletedTask;
         }
         _ = fids.Length > 6 ? Task.Run(DeleteSingleFile) : DeleteSingleFile();
