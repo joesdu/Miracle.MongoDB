@@ -197,7 +197,7 @@ public class GridFSController : ControllerBase
     }
 
     /// <summary>
-    /// 打开文件内容
+    /// 获取虚拟目录的文件路径
     /// </summary>
     /// <param name="id">文件ID</param>
     /// <returns></returns>
@@ -223,7 +223,7 @@ public class GridFSController : ControllerBase
     }
 
     /// <summary>
-    /// 清理文件夹
+    /// 清理缓存文件夹
     /// </summary>
     /// <returns></returns>
     [HttpDelete("ClearTempDir")]

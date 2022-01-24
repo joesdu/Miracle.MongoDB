@@ -28,7 +28,7 @@
   // 添加文件缓存
   "MiracleStaticFile": {
     "VirtualPath": "/miraclefs",
-    "PhysicalPath": "D:\\test"
+    "PhysicalPath": "/home/username/test"
   }
 }
 ```
