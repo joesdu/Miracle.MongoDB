@@ -218,7 +218,7 @@ public class GridFSController : ControllerBase
         }
         return new
         {
-            Uri = $"{HttpContext.Request.Scheme}:{HttpContext.Request.Host}{FileSetting.VirtualPath}/{fi.Filename}"
+            Uri = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{FileSetting.VirtualPath}/{fi.Filename}"
         };
     }
 
