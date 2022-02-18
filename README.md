@@ -11,6 +11,7 @@
 - 可配置部分类的 Id 字段不存为 ObjectId,而存为 string 类型.
 - 自动转化数据类型到 MongoDB 数据类型
 - 自动本地化 MOngoDB 时间类型
+- 添加.Net6 Date/Time Only类型支持(TimeOnly理论上应该是兼容原TimeSpan数据类型).
 
 ---
 

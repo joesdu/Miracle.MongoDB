@@ -1,7 +1,9 @@
+using example.local.api;
 using Microsoft.Extensions.FileProviders;
 using Miracle.MongoDB;
 using Miracle.MongoDB.GridFS;
 using Miracle.WebCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,34 +12,40 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "example.local.api", Version = "v1" }));
 builder.Services.AddCors(c => c.AddPolicy("AllowedHosts", s => s.WithOrigins(builder.Configuration["AllowedHosts"].Split(",")).AllowAnyMethod().AllowAnyHeader()));
-//var db = await builder.Services.AddMongoDbContext<BaseDbContext>(builder.Configuration, new()
-//{
-//    ShowConnectionString = true
-//});
+var db = await builder.Services.AddMongoDbContext<DbContext>(builder.Configuration, new()
+{
+    ShowConnectionString = true
+});
 
 //builder.Services.AddMiracleGridFS(db._database!, new()
 //{
 //    BusinessApp = "MiracleFS"
 //});
-await builder.Services.AddMiracleMongoAndGridFS<BaseDbContext>(builder.Configuration, new()
+//await builder.Services.AddMiracleMongoAndGridFS<BaseDbContext>(builder.Configuration, new()
+//{
+//    ShowConnectionString = true
+//}, fsoptions: new()
+//{
+//    BusinessApp = "MiracleFS",
+//    //Options = new ()
+//    //{
+//    //    BucketName = "",
+//    //    ChunkSizeBytes = 1024,
+//    //    DisableMD5 = true,
+//    //    ReadConcern = new () {},
+//    //    ReadPreference = ReadPreference.Primary,
+//    //    WriteConcern = WriteConcern.Unacknowledged
+//    //}
+//    DefalutDB = true,
+//    ItemInfo = "item.info"
+//});
+builder.Services.AddControllers(c => c.Filters.Add<ActionExecuteFilter>()).AddJsonOptions(c =>
 {
-    ShowConnectionString = true
-}, fsoptions: new()
-{
-    BusinessApp = "MiracleFS",
-    //Options = new ()
-    //{
-    //    BucketName = "",
-    //    ChunkSizeBytes = 1024,
-    //    DisableMD5 = true,
-    //    ReadConcern = new () {},
-    //    ReadPreference = ReadPreference.Primary,
-    //    WriteConcern = WriteConcern.Unacknowledged
-    //}
-    DefalutDB = true,
-    ItemInfo = "item.info"
+    c.JsonSerializerOptions.Converters.Add(new SystemTextJsonConvert.DateTimeConverter());
+    c.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    c.JsonSerializerOptions.Converters.Add(new SystemTextJsonConvert.TimeOnlyJsonConverter());
+    c.JsonSerializerOptions.Converters.Add(new SystemTextJsonConvert.DateOnlyJsonConverter());
 });
-builder.Services.AddControllers(c => c.Filters.Add<ActionExecuteFilter>());
 
 var app = builder.Build();
 
@@ -49,17 +57,17 @@ app.UseCors("AllowedHosts");
 
 app.UseAuthorization();
 
-var miraclefile = builder.Configuration.GetSection(MiracleStaticFileSettings.Postion).Get<MiracleStaticFileSettings>();
+//var miraclefile = builder.Configuration.GetSection(MiracleStaticFileSettings.Postion).Get<MiracleStaticFileSettings>();
 
-if (!Directory.Exists(miraclefile.PhysicalPath))
-{
-    _ = Directory.CreateDirectory(miraclefile.PhysicalPath);
-}
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(miraclefile.PhysicalPath),
-    RequestPath = miraclefile.VirtualPath
-});
+//if (!Directory.Exists(miraclefile.PhysicalPath))
+//{
+//    _ = Directory.CreateDirectory(miraclefile.PhysicalPath);
+//}
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(miraclefile.PhysicalPath),
+//    RequestPath = miraclefile.VirtualPath
+//});
 app.MapControllers();
 app.UseSwagger().UseSwaggerUI();
 

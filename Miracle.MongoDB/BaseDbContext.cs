@@ -39,9 +39,12 @@ public class BaseDbContext : IDbSet
                     new IgnoreExtraElementsConvention(true),//
                     new NamedIdMemberConvention("Id","ID"),//_id mapping Id or ID
                     new EnumRepresentationConvention(BsonType.String),//save enum value as string
+                   
                 }, _ => true);
                 BsonSerializer.RegisterSerializer(typeof(DateTime), new DateTimeSerializer(DateTimeKind.Local));//to local time
                 BsonSerializer.RegisterSerializer(new DecimalSerializer(BsonType.Decimal128));//decimal to decimal default
+                BsonSerializer.RegisterSerializer(new DateOnlySerializer());
+                BsonSerializer.RegisterSerializer(new TimeOnlySerializer());
             }
             catch (Exception ex)
             {
