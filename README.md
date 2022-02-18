@@ -9,10 +9,9 @@
 - 一个 MongoDB 驱动的服务包,方便使用 MongoDB 数据库.
 - 数据库中字段名驼峰命名,ID,Id 自动转化成 ObjectId.
 - 可配置部分类的 Id 字段不存为 ObjectId,而存为 string 类型.
-- 自动转化数据类型到 MongoDB 数据类型
 - 自动本地化 MOngoDB 时间类型
-- 添加.Net6 Date/Time Only类型支持(TimeOnly理论上应该是兼容原TimeSpan数据类型).
-
+- 添加.Net6 Date/Time Only类型支持(TimeOnly理论上应该是兼容原TimeSpan数据类型.TimeOnly格式化输出精确到千分之一秒).
+- Date/Time Only类型可结合[Miracle.WebCore](https://github.com/joesdu/Miracle.WebCore)使用,前端可直接传字符串类型的Date/Time Only的值.
 ---
 
 ##### 如何使用?
