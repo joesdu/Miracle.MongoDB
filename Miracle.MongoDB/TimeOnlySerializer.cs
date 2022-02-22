@@ -14,7 +14,8 @@ internal class TimeOnlySerializer : StructSerializerBase<TimeOnly>
     public override TimeOnly Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
     {
         var ticks = context.Reader.ReadString();
-        var dateTime = BsonUtils.ToLocalTime(DateTime.Parse($"0001-01-01 {ticks}"));
+        // 使用一个特殊的日子作为日期部分.得到一个本地化的DateTime类型.
+        var dateTime = BsonUtils.ToLocalTime(DateTime.Parse($"1994-02-15 {ticks}"));
         return TimeOnly.FromDateTime(dateTime);
     }
 }

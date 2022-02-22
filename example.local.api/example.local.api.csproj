@@ -8,12 +8,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="6.0.0" />
-		<PackageReference Include="Miracle.WebCore" Version="1.0.5" />
+		<PackageReference Include="Miracle.WebCore" Version="1.1.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Miracle.MongoDB.GridFS\Miracle.MongoDB.GridFS.csproj" />
+	  <ProjectReference Include="..\Miracle.MongoDB.GridFS.Extension\Miracle.MongoDB.GridFS.Extension.csproj" />
 	</ItemGroup>
 
 </Project>

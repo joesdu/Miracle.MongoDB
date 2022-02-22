@@ -4,11 +4,11 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>latest</LangVersion>
-		<Version>1.4.1</Version>
+		<Version>1.4.2</Version>
 		<Nullable>enable</Nullable>
 		<Authors>joesdu</Authors>
-		<RepositoryUrl>https://github.com/joesdu/Miracle.MongoDB</RepositoryUrl>
-		<PackageProjectUrl>https://github.com/joesdu/Miracle.MongoDB</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/GardeningX/Miracle.MongoDB</RepositoryUrl>
+		<PackageProjectUrl>https://www.nuget.org/packages/Miracle.MongoDB</PackageProjectUrl>
 		<Description>
 			一个 MongoDB 驱动的服务包,方便使用 MongoDB 数据库.
 			数据库中字段名驼峰命名,ID,Id 自动转化成 ObjectId.

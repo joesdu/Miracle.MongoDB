@@ -1,7 +1,6 @@
 using example.local.api;
-using Microsoft.Extensions.FileProviders;
 using Miracle.MongoDB;
-using Miracle.MongoDB.GridFS;
+using Miracle.MongoDB.GridFS.Extension;
 using Miracle.WebCore;
 using System.Text.Json.Serialization;
 
@@ -57,17 +56,8 @@ app.UseCors("AllowedHosts");
 
 app.UseAuthorization();
 
-//var miraclefile = builder.Configuration.GetSection(MiracleStaticFileSettings.Postion).Get<MiracleStaticFileSettings>();
+app.UseMiracleGridFSVirtualPath(builder.Configuration);
 
-//if (!Directory.Exists(miraclefile.PhysicalPath))
-//{
-//    _ = Directory.CreateDirectory(miraclefile.PhysicalPath);
-//}
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = new PhysicalFileProvider(miraclefile.PhysicalPath),
-//    RequestPath = miraclefile.VirtualPath
-//});
 app.MapControllers();
 app.UseSwagger().UseSwaggerUI();
 

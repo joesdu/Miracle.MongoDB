@@ -1,4 +1,4 @@
-﻿namespace Miracle.MongoDB.GridFS;
+﻿namespace Miracle.MongoDB.GridFS.Extension;
 public class MiracleStaticFileSettings
 {
     public const string Postion = "MiracleStaticFile";

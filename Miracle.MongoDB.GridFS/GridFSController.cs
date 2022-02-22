@@ -4,22 +4,20 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 
 namespace Miracle.MongoDB.GridFS;
 [ApiController]
 [Route("[controller]")]
 public class GridFSController : ControllerBase
 {
-    private readonly GridFSBucket Bucket;
-    private readonly IMongoCollection<GridFSItemInfo> Coll;
-    private readonly FilterDefinitionBuilder<GridFSItemInfo> _bf = Builders<GridFSItemInfo>.Filter;
-    private readonly MiracleStaticFileSettings FileSetting;
-    public GridFSController(GridFSBucket bucket, IMongoCollection<GridFSItemInfo> collection, IConfiguration config)
+    protected readonly GridFSBucket Bucket;
+    protected readonly IMongoCollection<GridFSItemInfo> Coll;
+    protected readonly FilterDefinitionBuilder<GridFSItemInfo> _bf = Builders<GridFSItemInfo>.Filter;
+
+    public GridFSController(GridFSBucket bucket, IMongoCollection<GridFSItemInfo> collection)
     {
         Bucket = bucket;
         Coll = collection;
-        FileSetting = config.GetSection(MiracleStaticFileSettings.Postion).Get<MiracleStaticFileSettings>();
     }
 
     /// <summary>
@@ -28,7 +26,7 @@ public class GridFSController : ControllerBase
     /// <param name="info">关键字支持:文件名,用户名,用户ID,App名称以及业务名称模糊匹配</param>
     /// <returns></returns>
     [HttpPost("Infos")]
-    public async Task<object> Infos(InfoSearch info)
+    public virtual async Task<object> Infos(InfoSearch info)
     {
         var f = _bf.Empty;
         if (!string.IsNullOrWhiteSpace(info.FileName)) f &= _bf.Where(c => c.FileName.Contains(info.FileName));
@@ -38,17 +36,17 @@ public class GridFSController : ControllerBase
         if (!string.IsNullOrWhiteSpace(info.BusinessType)) f &= _bf.Where(c => c.BusinessType.Contains(info.BusinessType));
         if (info.Start is not null) f &= _bf.Gte(c => c.CreatTime, info.Start);
         if (info.End is not null) f &= _bf.Lte(c => c.CreatTime, info.End);
-        if (!string.IsNullOrWhiteSpace(info.SearchKey)) f &= _bf.Or(_bf.Where(c => c.FileName.Contains(info.SearchKey)),
-            _bf.Where(c => c.UserName.Contains(info.SearchKey)),
-            _bf.Where(c => c.UserId.Contains(info.SearchKey)),
-            _bf.Where(c => c.App.Contains(info.SearchKey)),
-            _bf.Where(c => c.BusinessType.Contains(info.SearchKey)));
+        if (!string.IsNullOrWhiteSpace(info.Key)) f &= _bf.Or(_bf.Where(c => c.FileName.Contains(info.Key)),
+            _bf.Where(c => c.UserName.Contains(info.Key)),
+            _bf.Where(c => c.UserId.Contains(info.Key)),
+            _bf.Where(c => c.App.Contains(info.Key)),
+            _bf.Where(c => c.BusinessType.Contains(info.Key)));
         var total = await Coll.CountDocumentsAsync(f);
         var list = await Coll.FindAsync(f, new()
         {
             Sort = Builders<GridFSItemInfo>.Sort.Descending(c => c.CreatTime),
-            Limit = info.PageSize,
-            Skip = (info.PageIndex - 1) * info.PageSize
+            Limit = info.Size,
+            Skip = (info.Index - 1) * info.Size
         }).Result.ToListAsync();
         return PageResult.Wrap(total, list);
     }
@@ -57,7 +55,7 @@ public class GridFSController : ControllerBase
     /// 添加一个或多个文件
     /// </summary>
     [HttpPost("UploadMulti")]
-    public async Task<IEnumerable<GridFSItem>> PostMulti([FromForm] UploadGridFSMulti fs)
+    public virtual async Task<IEnumerable<GridFSItem>> PostMulti([FromForm] UploadGridFSMulti fs)
     {
         if (fs.File is null || fs.File.Count == 0) throw new("no files find");
         if (fs.DeleteIds.Count > 0) await Delete(fs.DeleteIds.ToArray());
@@ -106,7 +104,7 @@ public class GridFSController : ControllerBase
     /// 添加一个或多个文件
     /// </summary>
     [HttpPost("UploadSingle")]
-    public async Task<GridFSItem> PostSingle([FromForm] UploadGridFSSingle fs)
+    public virtual async Task<GridFSItem> PostSingle([FromForm] UploadGridFSSingle fs)
     {
         if (fs.File is null) throw new("no files find");
         if (!string.IsNullOrWhiteSpace(fs.DeleteId)) await Delete(fs.DeleteId);
@@ -150,7 +148,7 @@ public class GridFSController : ControllerBase
     /// <param name="id">文件ID</param>
     /// <returns></returns>
     [HttpGet("Download/{id}")]
-    public async Task<FileStreamResult> Download(string id)
+    public virtual async Task<FileStreamResult> Download(string id)
     {
         var stream = await Bucket.OpenDownloadStreamAsync(ObjectId.Parse(id), new() { Seekable = true });
         return File(stream, stream.FileInfo.Metadata["contentType"].AsString, stream.FileInfo.Filename);
@@ -162,7 +160,7 @@ public class GridFSController : ControllerBase
     /// <param name="name"></param>
     /// <returns></returns>
     [HttpGet("DownloadByName/{name}")]
-    public async Task<FileStreamResult> DownloadByName(string name)
+    public virtual async Task<FileStreamResult> DownloadByName(string name)
     {
         var stream = await Bucket.OpenDownloadStreamByNameAsync(name, new() { Seekable = true });
         return File(stream, stream.FileInfo.Metadata["contentType"].AsString, stream.FileInfo.Filename);
@@ -174,7 +172,7 @@ public class GridFSController : ControllerBase
     /// <param name="id">文件ID</param>
     /// <returns></returns>
     [HttpGet("FileContent/{id}")]
-    public async Task<FileContentResult> FileContent(string id)
+    public virtual async Task<FileContentResult> FileContent(string id)
     {
         var fi = await (await Bucket.FindAsync("{_id:ObjectId('" + id + "')}")).SingleOrDefaultAsync() ?? throw new("no data find");
         var bytes = await Bucket.DownloadAsBytesAsync(ObjectId.Parse(id), new GridFSDownloadOptions() { Seekable = true });
@@ -188,57 +186,12 @@ public class GridFSController : ControllerBase
     /// <param name="name"></param>
     /// <returns></returns>
     [HttpGet("FileContentByname/{name}")]
-    public async Task<FileContentResult> FileContentByName(string name)
+    public virtual async Task<FileContentResult> FileContentByName(string name)
     {
         var f = Builders<GridFSFileInfo>.Filter;
         var fi = await (await Bucket.FindAsync(f.Eq(c => c.Filename, name))).FirstOrDefaultAsync() ?? throw new("can't find this file");
         var bytes = await Bucket.DownloadAsBytesByNameAsync(name, new() { Seekable = true });
         return File(bytes, fi.Metadata["contentType"].AsString, fi.Filename);
-    }
-
-    /// <summary>
-    /// 获取虚拟目录的文件路径
-    /// </summary>
-    /// <param name="id">文件ID</param>
-    /// <returns></returns>
-    [HttpGet("FileUri/{id}")]
-    public async Task<object> FileUri(string id)
-    {
-        if (string.IsNullOrWhiteSpace(FileSetting.PhysicalPath)) throw new("RealPath is null");
-        var fi = await (await Bucket.FindAsync("{_id:ObjectId('" + id + "')}")).SingleOrDefaultAsync() ?? throw new("no data find");
-        await using var mongoStream = await Bucket.OpenDownloadStreamAsync(ObjectId.Parse(id), new() { Seekable = true });
-        if (!Directory.Exists(FileSetting.PhysicalPath)) _ = Directory.CreateDirectory(FileSetting.PhysicalPath);
-        await using var fsWrite = new FileStream($"{FileSetting.PhysicalPath}{Path.DirectorySeparatorChar}{fi.Filename}", FileMode.Create);
-        var buffer = new byte[1024 * 1024];
-        while (true)
-        {
-            var readCount = mongoStream.Read(buffer, 0, buffer.Length);
-            fsWrite.Write(buffer, 0, readCount);
-            if (readCount < buffer.Length) break;
-        }
-        return new
-        {
-            Uri = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{FileSetting.VirtualPath}/{fi.Filename}"
-        };
-    }
-
-    /// <summary>
-    /// 清理缓存文件夹
-    /// </summary>
-    /// <returns></returns>
-    [HttpDelete("ClearTempDir")]
-    public Task ClearDir()
-    {
-        if (!Directory.Exists(FileSetting.PhysicalPath)) return Task.CompletedTask;
-        try
-        {
-            Directory.Delete(FileSetting.PhysicalPath, true);
-        }
-        catch (IOException e)
-        {
-            Console.WriteLine(e.Message);
-        }
-        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -248,11 +201,8 @@ public class GridFSController : ControllerBase
     /// <param name="newname">新名称</param>
     /// <returns></returns>
     [HttpPut("{id}/Rename/{newname}")]
-    public Task Rename(string id, string newname)
+    public virtual Task Rename(string id, string newname)
     {
-        var filename = Coll.Find(c => c.FileId == id).Project(c => c.FileName).SingleOrDefaultAsync().Result;
-        var path = $"{FileSetting.PhysicalPath}/{filename}";
-        if (System.IO.File.Exists(path)) System.IO.File.Delete(path);
         _ = Bucket.RenameAsync(ObjectId.Parse(id), newname);
         _ = Coll.UpdateOneAsync(c => c.FileId == id, Builders<GridFSItemInfo>.Update.Set(c => c.FileName, newname));
         return Task.CompletedTask;
@@ -264,7 +214,7 @@ public class GridFSController : ControllerBase
     /// <param name="ids">文件ID集合</param>
     /// <returns></returns>
     [HttpDelete]
-    public async Task Delete(params string[] ids)
+    public virtual async Task<IEnumerable<string>> Delete(params string[] ids)
     {
         var sb = new StringBuilder();
         for (var i = 0; i < ids.Length; i++)
@@ -283,12 +233,11 @@ public class GridFSController : ControllerBase
             foreach (var item in fids)
             {
                 _ = Bucket.DeleteAsync(ObjectId.Parse(item.Id));
-                var path = $"{FileSetting.PhysicalPath}/{item.FileName}";
-                if (System.IO.File.Exists(path)) System.IO.File.Delete(path);
             }
             return Task.CompletedTask;
         }
         _ = fids.Length > 6 ? Task.Run(DeleteSingleFile) : DeleteSingleFile();
         _ = Coll.DeleteManyAsync(c => ids.Contains(c.FileId));
+        return fids.Select(c => c.FileName);
     }
 }
