@@ -58,7 +58,7 @@ public class GridFSController : ControllerBase
     public virtual async Task<IEnumerable<GridFSItem>> PostMulti([FromForm] UploadGridFSMulti fs)
     {
         if (fs.File is null || fs.File.Count == 0) throw new("no files find");
-        if (fs.DeleteIds.Count > 0) await Delete(fs.DeleteIds.ToArray());
+        if (fs.DeleteIds.Count > 0) _ = Delete(fs.DeleteIds.ToArray());
         var rsList = new List<GridFSItem>();
         var infos = new List<GridFSItemInfo>();
         foreach (var item in fs.File)

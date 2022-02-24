@@ -5,6 +5,8 @@ using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
 
 namespace Miracle.MongoDB.GridFS.Extension;
+[ApiController]
+[Route("[controller]")]
 public class ExtensionController : GridFSController
 {
     private readonly MiracleStaticFileSettings FileSetting;
