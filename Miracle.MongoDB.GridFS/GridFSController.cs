@@ -107,7 +107,7 @@ public class GridFSController : ControllerBase
     public virtual async Task<GridFSItem> PostSingle([FromForm] UploadGridFSSingle fs)
     {
         if (fs.File is null) throw new("no files find");
-        if (!string.IsNullOrWhiteSpace(fs.DeleteId)) await Delete(fs.DeleteId);
+        if (!string.IsNullOrWhiteSpace(fs.DeleteId)) _ = await Delete(fs.DeleteId);
         if (fs.File.ContentType is null) throw new("ContentType in File is null");
         var bapp = !string.IsNullOrWhiteSpace(fs.App) ? fs.App : GridFSExtensions.BusinessApp;
         if (string.IsNullOrWhiteSpace(bapp)) throw new("BusinessApp can't be null");
@@ -178,7 +178,6 @@ public class GridFSController : ControllerBase
         var bytes = await Bucket.DownloadAsBytesAsync(ObjectId.Parse(id), new GridFSDownloadOptions() { Seekable = true });
         return File(bytes, fi.Metadata["contentType"].AsString, fi.Filename);
     }
-
 
     /// <summary>
     /// 通过文件名打开文件

@@ -7,7 +7,7 @@ internal class TimeOnlySerializer : StructSerializerBase<TimeOnly>
 {
     public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, TimeOnly value)
     {
-        var str=value.ToString("HH:mm:ss.fff");
+        var str=value.ToString("HH:mm:ss");
         context.Writer.WriteString(str);
     }
 
