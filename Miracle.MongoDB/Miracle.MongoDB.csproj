@@ -9,14 +9,7 @@
 		<Authors>joesdu</Authors>
 		<RepositoryUrl>https://github.com/GardeningX/Miracle.MongoDB</RepositoryUrl>
 		<PackageProjectUrl>https://www.nuget.org/packages/Miracle.MongoDB</PackageProjectUrl>
-		<Description>
-			一个 MongoDB 驱动的服务包,方便使用 MongoDB 数据库.
-			数据库中字段名驼峰命名,ID,Id 自动转化成 ObjectId.
-			可配置部分类的 Id 字段不存为 ObjectId,而存为 string 类型.
-			自动转化数据类型到 MongoDB 数据类型,
-			自动本地化 MOngoDB 时间类型,
-			.Net 6+ Date/Time Only类型支持.
-		</Description>
+		<Description>一个 MongoDB 驱动的服务包,方便使用 MongoDB 数据库.数据库中字段名驼峰命名,ID,Id 自动转化成 ObjectId.可配置部分类的 Id 字段不存为 ObjectId,而存为 string 类型.自动转化数据类型到 MongoDB 数据类型,自动本地化 MOngoDB 时间类型,.Net 6+ Date/Time Only类型支持.</Description>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
