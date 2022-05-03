@@ -26,21 +26,27 @@ public class BaseDbContext : IDbSet
         return t;
     }
 
-    public static void RegistryConventionPack(Action<ConventionPackOptions>? configure = null, bool? first = true)
+    public static T CreateInstance<T>(MiracleMongoClientSettings clientSettings) where T : BaseDbContext
     {
-        configure?.Invoke(options);
-        if (first is not null & first is true)
+        var t = Activator.CreateInstance<T>();
+        if (clientSettings.Validate) throw new("ServerAddresses or databasename is Empty");
+        t._client = new MongoClient(clientSettings.ClientSettings);
+        var dbname = !string.IsNullOrWhiteSpace(clientSettings.DatabaseName) ? clientSettings.DatabaseName : "miracle";
+        t._database = t._client.GetDatabase(dbname);
+        return t;
+    }
+
+    public static void RegistryConventionPack(MiracleMongoOptions mracleOptions)
+    {
+        mracleOptions.ConventionPackOptionsAction?.Invoke(options);
+        if (mracleOptions.First is not null & mracleOptions.First is true)
         {
             try
             {
-                ConventionRegistry.Register("commonpack", new ConventionPack
+                foreach (var item in mracleOptions.ConventionRegistry)
                 {
-                    new CamelCaseElementNameConvention(),//property to camel
-                    new IgnoreExtraElementsConvention(true),//
-                    new NamedIdMemberConvention("Id","ID"),//_id mapping Id or ID
-                    new EnumRepresentationConvention(BsonType.String),//save enum value as string
-                   
-                }, _ => true);
+                    ConventionRegistry.Register(item.Key, item.Value.Conventions, item.Value.Filter);
+                }
                 BsonSerializer.RegisterSerializer(typeof(DateTime), new DateTimeSerializer(DateTimeKind.Local));//to local time
                 BsonSerializer.RegisterSerializer(new DecimalSerializer(BsonType.Decimal128));//decimal to decimal default
                 BsonSerializer.RegisterSerializer(new DateOnlySerializer());

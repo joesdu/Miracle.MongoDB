@@ -1,7 +1,10 @@
 using example.local.api;
 using Miracle.MongoDB;
+using Miracle.MongoDB.GridFS;
 using Miracle.MongoDB.GridFS.Extension;
 using Miracle.WebCore;
+using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Driver;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,33 +14,46 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "example.local.api", Version = "v1" }));
 builder.Services.AddCors(c => c.AddPolicy("AllowedHosts", s => s.WithOrigins(builder.Configuration["AllowedHosts"].Split(",")).AllowAnyMethod().AllowAnyHeader()));
-var db = await builder.Services.AddMongoDbContext<DbContext>(builder.Configuration, new()
+
+var dboptions = new MiracleMongoOptions();
+dboptions.AppendConventionRegistry("IdentityServer Mongo Conventions", new()
 {
-    ShowConnectionString = true
+    Conventions = new()
+    {
+        new IgnoreExtraElementsConvention(true)
+    },
+    Filter = _ => true
 });
 
-//builder.Services.AddMiracleGridFS(db._database!, new()
-//{
-//    BusinessApp = "MiracleFS"
-//});
-//await builder.Services.AddMiracleMongoAndGridFS<BaseDbContext>(builder.Configuration, new()
-//{
-//    ShowConnectionString = true
-//}, fsoptions: new()
-//{
-//    BusinessApp = "MiracleFS",
-//    //Options = new ()
-//    //{
-//    //    BucketName = "",
-//    //    ChunkSizeBytes = 1024,
-//    //    DisableMD5 = true,
-//    //    ReadConcern = new () {},
-//    //    ReadPreference = ReadPreference.Primary,
-//    //    WriteConcern = WriteConcern.Unacknowledged
-//    //}
-//    DefalutDB = true,
-//    ItemInfo = "item.info"
-//});
+var db = await builder.Services.AddMongoDbContext<DbContext>(clientSettings: new()
+{
+    ServerAddresses = new()
+    {
+        new("192.168.2.10", 27017),
+    },
+    AuthDatabase = "admin",
+    DatabaseName = "miracle",
+    UserName = "oneblogs",
+    Password = "&oneblogs.cn",
+}, dboptions: dboptions);
+
+builder.Services.AddMiracleGridFS(db._database!, new()
+{
+    BusinessApp = "MiracleFS",
+    Options = new()
+    {
+        BucketName = "",
+        ChunkSizeBytes = 1024,
+        DisableMD5 = true,
+        ReadConcern = new() { },
+        ReadPreference = ReadPreference.Primary,
+        WriteConcern = WriteConcern.Unacknowledged
+    },
+    DefalutDB = true,
+    ItemInfo = "item.info"
+
+});
+
 builder.Services.AddControllers(c =>
 {
     c.Filters.Add<ActionExecuteFilter>();

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
@@ -21,11 +20,5 @@ public static class GridFSExtensions
         }).Configure<KestrelServerOptions>(c => c.Limits.MaxRequestBodySize = int.MaxValue).AddSingleton(new GridFSBucket(fsoptions.DefalutDB ? db.Client.GetDatabase("miracle") : db, fsoptions.Options));
         _ = services.AddSingleton(db.Client.GetDatabase("miracle").GetCollection<GridFSItemInfo>(fsoptions.ItemInfo));
         return services;
-    }
-
-    public static async Task<IServiceCollection> AddMiracleMongoAndGridFS<T>(this IServiceCollection services, IConfiguration configuration, MiracleMongoOptions? dboption = null, MiracleGridFSOptions? fsoptions = null) where T : BaseDbContext
-    {
-        var db = await services.AddMongoDbContext<T>(configuration, dboption);
-        return AddMiracleGridFS(services, db._database!, fsoptions);
     }
 }
