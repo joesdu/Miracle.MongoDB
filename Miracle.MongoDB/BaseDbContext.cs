@@ -22,7 +22,7 @@ public class BaseDbContext : IDbSet
         var mongoUrl = new MongoUrl(connectionString);
         t._client = new MongoClient(mongoUrl);
         var dbname = string.IsNullOrWhiteSpace(db) ? mongoUrl.DatabaseName : db;
-        t._database = t._client.GetDatabase(dbname);
+        t._database = t._client.GetDatabase(dbname);        
         return t;
     }
 
