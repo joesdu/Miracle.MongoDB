@@ -18,10 +18,10 @@ public static class MongoServiceExtensions
     private static string ConnectionString(IConfiguration configuration, string connKey = "CONNECTIONSTRINGS_MONGO")
     {
         var connectionString = configuration[connKey];
-        if (!string.IsNullOrWhiteSpace(connectionString)) throw new("ConnectionString is not null");
-        else connectionString = configuration.GetConnectionString("Mongo");
-        if (string.IsNullOrWhiteSpace(connectionString)) throw new("💔:No [CONNECTIONSTRINGS_MONGO] setting in env and ConnectionStrings.Mongo in appsettings.json");
-        return connectionString;
+        if (string.IsNullOrWhiteSpace(connectionString)) connectionString = configuration.GetConnectionString("Mongo");
+        return string.IsNullOrWhiteSpace(connectionString)
+            ? throw new("💔:No [CONNECTIONSTRINGS_MONGO] setting in env and ConnectionStrings.Mongo in appsettings.json")
+            : connectionString;
     }
 
     /// <summary>
