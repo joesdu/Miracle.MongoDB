@@ -37,12 +37,12 @@ var db = await builder.Services.AddMongoDbContext<DbContext>(clientSettings: new
     Password = "&oneblogs.cn",
 }, dboptions: dboptions);
 
-builder.Services.AddMiracleGridFS(db._database!, new()
+var fsop = new MiracleGridFSOptions()
 {
     BusinessApp = "MiracleFS",
     Options = new()
     {
-        BucketName = "",
+        BucketName = "miracle",
         ChunkSizeBytes = 1024,
         DisableMD5 = true,
         ReadConcern = new() { },
@@ -51,8 +51,9 @@ builder.Services.AddMiracleGridFS(db._database!, new()
     },
     DefalutDB = true,
     ItemInfo = "item.info"
+};
 
-});
+builder.Services.AddMiracleGridFS(db._database!, fsop);
 
 builder.Services.AddControllers(c =>
 {

@@ -4,10 +4,10 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>latest</LangVersion>
-		<Version>2.0.1</Version>
+		<Version>2.0.2</Version>
 		<Nullable>enable</Nullable>
 		<Authors>joesdu</Authors>
-		<RepositoryUrl>https://github.com/GardeningX/Miracle.MongoDB</RepositoryUrl>
+		<RepositoryUrl>https://github.com/joesdu/Miracle.MongoDB</RepositoryUrl>
 		<PackageProjectUrl>https://www.nuget.org/packages/Miracle.MongoDB</PackageProjectUrl>
 		<Description>一个 MongoDB 驱动的服务包,方便使用 MongoDB 数据库.数据库中字段名驼峰命名,ID,Id 自动转化成 ObjectId.可配置部分类的 Id 字段不存为 ObjectId,而存为 string 类型.自动转化数据类型到 MongoDB 数据类型,自动本地化 MOngoDB 时间类型,.Net 6+ Date/Time Only类型支持.</Description>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
@@ -26,8 +26,8 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-		<PackageReference Include="MongoDB.Bson" Version="2.15.0" />
-		<PackageReference Include="MongoDB.Driver" Version="2.15.0" />
+		<PackageReference Include="MongoDB.Bson" Version="2.15.1" />
+		<PackageReference Include="MongoDB.Driver" Version="2.15.1" />
 	</ItemGroup>
 
 </Project>

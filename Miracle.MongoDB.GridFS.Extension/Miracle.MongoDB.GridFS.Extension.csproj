@@ -4,10 +4,10 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>latest</LangVersion>
-		<Version>2.0.1</Version>
+		<Version>2.0.2</Version>
 		<Nullable>enable</Nullable>
 		<Authors>joesdu</Authors>
-		<RepositoryUrl>https://github.com/GardeningX/Miracle.MongoDB</RepositoryUrl>
+		<RepositoryUrl>https://github.com/joesdu/Miracle.MongoDB</RepositoryUrl>
 		<PackageProjectUrl>https://www.nuget.org/packages/Miracle.MongoDB.GridFS.Extension</PackageProjectUrl>
 		<Description>Miracle.MongoDB.GridFS扩展,添加虚拟目录,让数据库中流式文件变成本地文件进行静态伺服.</Description>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>

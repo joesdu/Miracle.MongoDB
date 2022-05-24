@@ -13,6 +13,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Miracle.MongoDB.GridFS.Extension\Miracle.MongoDB.GridFS.Extension.csproj" />
+	  <ProjectReference Include="..\Miracle.MongoDB\Miracle.MongoDB.csproj" />
 	</ItemGroup>
 
 </Project>
